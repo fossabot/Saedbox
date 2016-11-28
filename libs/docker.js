@@ -9,4 +9,10 @@ if (!stats.isSocket()) {
 
 var docker = new Docker({ socketPath: socket });
 
-module.export = docker;
+docker.list = function(cb) {
+	docker.listContainers({all: true}, function(err,containers){
+			cb(containers);
+	});
+};
+
+module.exports = docker;
