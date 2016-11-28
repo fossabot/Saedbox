@@ -17,7 +17,7 @@ Response.prototype.sendError = function(res, error) {
  * @param {*} result
  */
 Response.prototype.send = function(res, result) {
-    res.status(200).json(result);
+    res.status(200).json(this.message(result));
 };
 
 /**
@@ -31,7 +31,7 @@ Response.prototype.error = function(message) {
  * @private
  */
 Response.prototype.message = function(message) {
-    return {'info': message};
+    return {'data': message};
 };
 
 module.exports = Response;
