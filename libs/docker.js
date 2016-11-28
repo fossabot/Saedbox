@@ -38,4 +38,18 @@ docker.stop = function(id,cb) {
 	});
 };
 
+docker.delete = function(id,cb) {
+	var container = docker.getContainer(id);
+	container.remove(function(err,data) {
+		console.log(data);
+		cb(data);
+	});
+};
+
+docker.run = function(name,cb) {
+	docker.run(name, function (err,data,container) {
+		console.log(data.SatusCode);
+	});
+};
+
 module.exports = docker;

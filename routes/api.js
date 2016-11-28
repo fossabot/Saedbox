@@ -28,5 +28,8 @@ router.get("/api/service/:id/:action", function(req, res, next) {
 		res.send("That is not a correct use");
 	}
 });
+router.post("/api/service/:name", function(req, res, next) {
+	
+})
 
 module.exports = router;
