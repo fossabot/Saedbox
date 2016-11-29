@@ -8,16 +8,16 @@ let resp = new HelperResponse();
 let models = require('../models');
 
 router.get("/", function(req, res, next) {
-    res.send('Thanks to check documention for API use');
-});
+    resp.send(res, 'Salut');
+})
 
-router.get("/api/services", function(req, res, next) {	
-	docker.list(function(result){res.send(JSON.stringify(result));});
-});
+router.get("/api/services", function(req, res, next) {
+    resp.send(res, 'get services informations')
+})
 
 router.get("/api/service/:id", function(req, res, next) {
-    res.send('get ' + req.params.id + ' informations');
-});
+    resp.send(res, 'get ' + req.params.id + ' informations')
+})
 
 
 //User-related routes
