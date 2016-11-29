@@ -1,8 +1,11 @@
 var express = require("express")
 var app = express()
 var path = require('path');
+var routes = require("./routes/api");
+var bodyParser = require('body-parser');
 
-var routes = require("./routes/api")
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/', routes);
 
@@ -12,4 +15,4 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-app.listen(8080)
+app.listen(9002);
