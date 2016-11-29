@@ -1,4 +1,4 @@
-let Waterline = require('waterline');
+var Waterline = require('waterline');
 
 
 var User = Waterline.Collection.extend({

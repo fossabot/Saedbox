@@ -9,23 +9,10 @@ var express = require("express"),
 var path = require('path'),
 	Waterline = require('waterline'),
 	models = require('./models'),
-	connections = require('./config/connections.js'),
-	routes = require("./routes/api");
+	connections = require('./config/connections.js');
 
 //Loading DB adapters for waterline
 var diskAdapter = require('sails-disk');
-
-app.use('/', routes);
-
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(methodOverride());
-
-app.use(function(req, res, next) {
-  var err = new Error('Page introuvable');
-  err.status = 404;
-  next(err);
-});
 
 models.initialize(connections, function(err, models) {
   if(err) throw err;
@@ -33,5 +20,20 @@ models.initialize(connections, function(err, models) {
   app.models = models.collections;
   app.connections = connections.connections;
 
-app.listen(9002);
+
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.json());
+  app.use(methodOverride());
+
+  var routes = require("./routes/api");
+  
+  app.use('/', routes);
+
+  app.use(function(req, res, next) {
+    var err = new Error('Page introuvable');
+    err.status = 404;
+    next(err);
+  });
+
+  app.listen(9002);
 });
