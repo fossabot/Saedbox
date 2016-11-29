@@ -24,12 +24,16 @@ router.get("/api/service/:id/:action", function(req, res, next) {
 		docker.start(ID,resp.send.bind(resp,res));
 	} else if (req.params.action == "stop") {
 		docker.stop(ID,resp.send.bind(resp,res));		
+	} else if (req.params.action == "delete") {
+		docker.delete(ID,resp.send.bind(resp,res));
 	} else {
 		res.send("That is not a correct use");
 	}
 });
-router.post("/api/service/:name", function(req, res, next) {
-	
-})
+
+router.post("/api/service", function(req, res, next) {
+	var name = req.body.name;
+	docker.new(name,resp.send.bind(resp,res));
+});
 
 module.exports = router;

@@ -46,9 +46,26 @@ docker.delete = function(id,cb) {
 	});
 };
 
-docker.run = function(name,cb) {
-	docker.run(name, function (err,data,container) {
-		console.log(data.SatusCode);
+docker.new = function(name,cb) {
+	var optsc = {
+	  'Hostname': '',
+	  'User': '',
+	  'AttachStdin': true,
+	  'AttachStdout': true,
+	  'AttachStderr': true,
+	  'Tty': true,
+	  'OpenStdin': true,
+	  'StdinOnce': false,
+	  'Env': null,
+	  'Cmd': [],
+	  'Dns': [],
+	  'Image': name,
+	  'Volumes': {},
+	  'VolumesFrom': []
+	};
+	docker.createContainer(optsc, function (err, container) {
+		console.log(container);
+    	cb(container.id);
 	});
 };
 
