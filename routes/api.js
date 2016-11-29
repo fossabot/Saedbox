@@ -1,8 +1,8 @@
-let express = require("express");
-let docker = require("../libs/docker.js");
-let router = express.Router();
-let HelperResponse = require('../libs/Helpers/Response.js');
-let resp = new HelperResponse();
+var express = require('express');
+var HelperResponse = require('../libs/Helpers/Response.js');
+var resp = new HelperResponse();
+var router = express.Router();
+var docker = require("../libs/docker.js");
 
 router.get("/", function(req, res, next) {
 	resp.send(res, 'Thanks to check documention for API use');

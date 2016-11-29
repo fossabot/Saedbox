@@ -1,5 +1,5 @@
 
-Response = function() {
+var Response = function() {
 };
 
 /**
@@ -8,7 +8,7 @@ Response = function() {
  * @param {!String} error
  */
 Response.prototype.sendError = function(res, error) {
-    res.status(400).json(this.error(result));
+    res.status(400).json(this.error(error));
 };
 
 /**
