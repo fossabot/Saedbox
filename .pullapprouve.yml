@@ -1,0 +1,15 @@
+approve_by_comment: true
+approve_regex: '^(Approved|:\+1:|Ok)'
+author_approval: ignored
+extends: default
+reject_regex: '^(Rejected|:-1:)'
+reset_on_push: true
+required: 2
+reviewers:
+  members:
+  - Hydrog3n
+  - moutonnoireu
+  - xataz
+  - arckosfr
+  - farfeduc
+  name: default
