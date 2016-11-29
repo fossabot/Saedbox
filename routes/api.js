@@ -52,7 +52,6 @@ router.get("/api/users", function(req, res, next) {
 
 //Create a user
 router.post('/api/users', function(req, res) {
-    console.log(req.body);
     models.collections.user.create(req.body, function(err, model) {
     if(err) resp.sendError(res,err);
     resp.send(res,model);
@@ -78,7 +77,7 @@ router.delete('/api/users/:id', function(req, res) {
 //Update a user
 router.put('/api/users/:id', function(req, res) {
   // Don't pass ID to update
-  //delete req.body.id;
+  delete req.body.id;
   models.collections.user.update({ id: req.params.id }, req.body, function(err, model) {
     if(err) resp.sendError(res,err);
     resp.send(res,model);
