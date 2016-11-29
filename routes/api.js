@@ -1,7 +1,7 @@
-let express = require('express');
-let HelperResponse = require('../libs/Helpers/Response.js');
-let resp = new HelperResponse();
-let router = express.Router();
+var express = require('express');
+var HelperResponse = require('../libs/Helpers/Response.js');
+var resp = new HelperResponse();
+var router = express.Router();
 
 router.get("/", function(req, res, next) {
     resp.send(res, 'Salut');
