@@ -1,2 +1,2 @@
-let Docker = require("dockerode")
-let docker = Docker();
+var Docker = require("dockerode")
+var docker = Docker();
