@@ -15,4 +15,58 @@ docker.list = function(cb) {
 	});
 };
 
+docker.container = function(id,cb) {
+	var container = docker.getContainer(id);
+	container.inspect(function(err,data) {
+		cb(data);
+	});
+};
+
+docker.start = function(id,cb) {
+	var container = docker.getContainer(id);
+	container.start(function(err,data) {
+		console.log(data);
+		cb(data);
+	});
+};
+
+docker.stop = function(id,cb) {
+	var container = docker.getContainer(id);
+	container.stop(function(err,data) {
+		console.log(data);
+		cb(data);
+	});
+};
+
+docker.delete = function(id,cb) {
+	var container = docker.getContainer(id);
+	container.remove(function(err,data) {
+		console.log(data);
+		cb(data);
+	});
+};
+
+docker.new = function(name,cb) {
+	var optsc = {
+	  'Hostname': '',
+	  'User': '',
+	  'AttachStdin': true,
+	  'AttachStdout': true,
+	  'AttachStderr': true,
+	  'Tty': true,
+	  'OpenStdin': true,
+	  'StdinOnce': false,
+	  'Env': null,
+	  'Cmd': [],
+	  'Dns': [],
+	  'Image': name,
+	  'Volumes': {},
+	  'VolumesFrom': []
+	};
+	docker.createContainer(optsc, function (err, container) {
+		console.log(container);
+    	cb(container.id);
+	});
+};
+
 module.exports = docker;

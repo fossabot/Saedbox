@@ -1,15 +1,14 @@
 var express = require("express"),
-	 _ = require('@sailshq/lodash'),
+	  _ = require('@sailshq/lodash'),
     app = express(),
+    path = require('path'),
     Waterline = require('waterline'),
     bodyParser = require('body-parser'),
     methodOverride = require('method-override');
 
 
-var path = require('path'),
-	Waterline = require('waterline'),
-	models = require('./models'),
-	connections = require('./config/connections.js');
+var models = require('./models'),
+	  connections = require('./config/connections.js');
 
 //Loading DB adapters for waterline
 var diskAdapter = require('sails-disk');
