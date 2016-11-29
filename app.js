@@ -1,18 +1,38 @@
-var express = require("express")
-var app = express()
-var path = require('path');
-var routes = require("./routes/api");
-var bodyParser = require('body-parser');
+var express = require("express"),
+	  _ = require('@sailshq/lodash'),
+    app = express(),
+    path = require('path'),
+    Waterline = require('waterline'),
+    bodyParser = require('body-parser'),
+    methodOverride = require('method-override');
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use('/', routes);
+var models = require('./models'),
+	  connections = require('./config/connections.js');
 
-app.use(function(req, res, next) {
-  var err = new Error('Page introuvable');
-  err.status = 404;
-  next(err);
+//Loading DB adapters for waterline
+var diskAdapter = require('sails-disk');
+
+models.initialize(connections, function(err, models) {
+  if(err) throw err;
+
+  app.models = models.collections;
+  app.connections = connections.connections;
+
+
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.json());
+  app.use(methodOverride());
+
+  var routes = require("./routes/api");
+  
+  app.use('/', routes);
+
+  app.use(function(req, res, next) {
+    var err = new Error('Page introuvable');
+    err.status = 404;
+    next(err);
+  });
+
+  app.listen(9002);
 });
-
-app.listen(9002);
