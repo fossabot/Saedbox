@@ -7,4 +7,4 @@ before_script:
   - "npm install -g jshint"
 
 after_script:
-  - "jshint --config=.jshintconfig ."
+  - "jshint --config=.jshintrc ."
