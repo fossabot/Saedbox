@@ -35,4 +35,6 @@ models.initialize(connections, function(err, models) {
   });
 
   app.listen(9002);
+
+  module.exports = app; // for testing
 });
