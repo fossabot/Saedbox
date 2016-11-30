@@ -1,0 +1,16 @@
+version: 2
+groups:
+  code-review:
+    approve_by_comment:
+      approve_regex: '^(Approved|Ok|:\+1:)'
+      enabled: true
+      reject_regex: '^(Rejected|:-1:)'
+    required: 2
+    reset_on_push:
+      enabled: false
+    users:
+    - arckosfr
+    - farfeduc
+    - Hydrog3n
+    - moutonnoireu
+    - xataz
