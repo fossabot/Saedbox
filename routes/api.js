@@ -32,8 +32,8 @@ router.get("/api/services/:id/:action", function(req, res, next) {
 	}
 });
 
-router.delete("/api/services/:id", function (req, res, next) {
-	var ID = req.params.id;
+router.delete("/api/services", function (req, res, next) {
+	var ID = req.body.id;
 		docker.delete(ID,resp.send.bind(resp,res));
 });
 
