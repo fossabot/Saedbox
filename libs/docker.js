@@ -11,7 +11,8 @@ var docker = new Docker({ socketPath: socket });
 
 docker.list = function(cb) {
 	docker.listContainers({all: true}, function(err,containers){
-			cb(containers);
+      console.log(containers.length);
+      cb(containers);
 	});
 };
 
@@ -64,9 +65,18 @@ docker.new = function(name,cb) {
 	  'VolumesFrom': []
 	};
 	docker.createContainer(optsc, function (err, container) {
-		console.log(container);
-    	cb(container.id);
-	});
-};
+    if (err) {
+    if (err.statusCode == 404) {
+      docker.pull(name, function (err, stream) {
+        docker.modem.followProgress(stream, onFinished);
+        function onFinished(err, output) {
+          docker.createContainer(optsc, function (err, container) {
+            cb(container);
+          })};
+      })}
+    } else {
+        cb(container);
+      };
+	})};
 
 module.exports = docker;
