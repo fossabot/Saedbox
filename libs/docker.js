@@ -11,7 +11,6 @@ var docker = new Docker({ socketPath: socket });
 
 docker.list = function(cb) {
 	docker.listContainers({all: true}, function(err,containers){
-      console.log(containers.length);
       cb(containers);
 	});
 };
