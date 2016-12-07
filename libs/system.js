@@ -2,7 +2,6 @@ var fs     = require('fs');
 var os     = require('os');
 var exec = require('child_process').exec;
 var system = [];
-var cpu = os.loadavg();
 
 function freemem(cb) {
   exec("awk '/MemAvailable/ { print $2 }' /proc/meminfo", function(error, stdout, stderr) {
@@ -20,7 +19,7 @@ function freemem(cb) {
 
 system.get = function(cb) {
   var data = {
-    "CPU" : cpu,
+    "CPU" : os.loadavg(),
     "RAM" : "",
     "DISK" : "to complete",
     "NET" : "to complete"
