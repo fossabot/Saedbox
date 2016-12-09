@@ -1,30 +1,47 @@
 var fs     = require('fs');
-var os     = require('os');
-var exec = require('child_process').exec;
 var system = [];
+var si = require('systeminformation');
 
-function freemem(cb) {
-  exec("awk '/MemAvailable/ { print $2 }' /proc/meminfo", function(error, stdout, stderr) {
-  stdout = Number(stdout)*1000;
-  var data = { 'total' : os.totalmem(),
-           'used' : os.totalmem()-stdout,
-           'available' : stdout,
-           'percentage_used' : Math.round(((os.totalmem()-stdout)/os.totalmem())*100),
-           'percentage_available' : Math.round(100-(((os.totalmem()-stdout)/os.totalmem())*100)) };
-  cb(data);
-  })
-};
+function mem(cb) {
+  si.mem(function(data) {
+  var data1 = { 'total' : data.total,
+           'used' : data.used,
+           'available' : data.available,
+           'percentage_used' : Math.round(((data.total-data.available)/data.total)*100),
+           'percentage_available' : Math.round((data.available/data.total)*100) };
+  cb(data1);
+  })};
 
+function load(cb) {
+  si.currentLoad(function(data){
+    cb(data.avgload);
+  })};
 
+function network(cb) {
+  si.networkStats(function(data) {
+    var data1 = { "rx" : data.rx,
+                  "tx" : data.tx,
+                  "rxsec" : data.rx_sec,
+                  "txsec" : data.tx_sec };
+    cb(data1);
+  })};
+
+  function fsdisk(cb) {
+    si.fsSize( function(data) {
+      cb(data);
+    })};
 
 system.get = function(cb) {
   var data = {
-    "CPU" : os.loadavg(),
+    "CPU" : "",
     "RAM" : "",
-    "DISK" : "to complete",
-    "NET" : "to complete"
+    "DISK" : "",
+    "NET" : ""
   };
-  freemem(function(res){data.RAM=res; cb(data)});
+  //mem(function(res){data.RAM=res; cb(data)});
+  //load(function(res){data.CPU=res; cb(data)});
+  //network(function(res){data.NET=res; cb(data)});
+  fsdisk(function(res){data.DISK=res; cb(data)});
 }
 
 
