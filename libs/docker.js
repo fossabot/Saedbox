@@ -10,7 +10,7 @@ if (!stats.isSocket()) {
 var docker = new Docker({ socketPath: socket });
 
 docker.list = function(cb) {
-	docker.listContainers({all: true}, function(err,containers){
+  docker.listContainers({all: true}, function(err,containers){
       cb(containers);
 	});
 };
@@ -77,8 +77,7 @@ docker.new = function(name, cb) {
             if (err.statusCode == 404) {
                 docker.pull(name, function(err, stream) {
                     docker.modem.followProgress(stream, onFinished);
-
-                    function onFinished(err, output) {
+                      function onFinished(err, output) {
                         docker.createContainer(optsc, function(err, container) {
                             cb(container);
                         })

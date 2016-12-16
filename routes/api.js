@@ -1,5 +1,6 @@
 let express = require("express");
 let docker = require("../libs/docker.js");
+let system = require("../libs/system.js");
 let router = express.Router();
 
 let HelperResponse = require('../libs/Helpers/Response.js');
@@ -7,19 +8,23 @@ let resp = new HelperResponse();
 
 let models = require('../models');
 
+//Get API base
 router.get("/", function(req, res, next) {
 	resp.send(res, 'Thanks to check documention for API use');
 });
 
+//Get services
 router.get("/api/services", function(req, res, next) {
     docker.list(resp.send.bind(resp,res));
 });
 
+//Get Service ID's info
 router.get("/api/services/:id", function(req, res, next) {
 	var ID = req.params.id;
 	docker.container(ID,resp.send.bind(resp,res));
 });
 
+//Stop/start Service
 router.get("/api/services/:id/:action", function(req, res, next) {
 	var ID = req.params.id;
 	var action = req.params.action;
@@ -32,11 +37,13 @@ router.get("/api/services/:id/:action", function(req, res, next) {
 	}
 });
 
+//Delete Service
 router.delete("/api/services", function (req, res, next) {
 	var ID = req.body.id;
 		docker.delete(ID,resp.send.bind(resp,res));
 });
 
+//Create new Service
 router.post("/api/services", function(req, res, next) {
 	var name = req.body.name;
 	docker.new(name,resp.send.bind(resp,res));
@@ -131,5 +138,9 @@ router.put('/api/groups/:id', function(req, res) {
     resp.send(res,model);
   });
 });
+
+router.get('/api/system', function(req, res) {
+	system.get(resp.send.bind(resp,res));
+})
 
 module.exports = router;
