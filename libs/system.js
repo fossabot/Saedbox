@@ -38,10 +38,19 @@ system.get = function(cb) {
     "DISK" : "",
     "NET" : ""
   };
-  //mem(function(res){data.RAM=res; cb(data)});
-  //load(function(res){data.CPU=res; cb(data)});
-  //network(function(res){data.NET=res; cb(data)});
-  fsdisk(function(res){data.DISK=res; cb(data)});
+  mem(function(res) {
+      data.RAM = res;
+      load(function(res) {
+          data.CPU = res;
+          network(function(res) {
+              data.NET = res;
+              fsdisk(function(res) {
+                  data.DISK = res;
+                  cb(data)
+              });
+          });
+      });
+  });
 }
 
 
