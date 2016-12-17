@@ -6,6 +6,9 @@ let router = express.Router();
 let HelperResponse = require('../libs/Helpers/Response.js');
 let resp = new HelperResponse();
 
+let HelperSystem = require('../libs/Helpers/System.js');
+let systemInfo = new HelperSystem();
+
 let models = require('../models');
 
 //Get API base
@@ -140,7 +143,8 @@ router.put('/api/groups/:id', function(req, res) {
 });
 
 router.get('/api/system', function(req, res) {
-	system.get(resp.send.bind(resp,res));
+  resp.send(res, systemInfo.getAll());
+	//system.get(resp.send.bind(resp,res));
 })
 
 module.exports = router;
