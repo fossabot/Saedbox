@@ -44,7 +44,7 @@ router.post("/api/service", function(req, res, next) {
 
 //List all users
 router.get("/api/users", function(req, res, next) {
-    models.collections.user.find().exec(function(err, result) {
+    models.collections.user.find().populate('group','containers').exec(function(err, result) {
     if(err) resp.sendError(res,err);
     resp.send(res,result);
   });
@@ -60,7 +60,7 @@ router.post('/api/users', function(req, res) {
 
 //Get User infos
 router.get('/api/users/:id', function(req, res) {
-    models.collections.user.findOne({ id: req.params.id }, function(err, model) {
+    models.collections.user.populate('group').populate('container').findOne({ id: req.params.id }, function(err, model) {
     if(err) resp.sendError(res,err);
     resp.send(res,model);
   });

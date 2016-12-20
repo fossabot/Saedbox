@@ -7,8 +7,23 @@ var User = Waterline.Collection.extend({
   connection: 'myLocalDisk',
 
   attributes: {
-    first_name: 'string',
-    last_name: 'string'
+    name: {
+    	type: 'string',
+    	required: true,
+    	unique: true
+    },
+    password: {
+    	type: 'string',
+    	required: true
+    },
+    group:{
+    	model: 'group',
+    	required: true
+    },
+    containers:{
+    	collection: 'container',
+      	via: 'user'
+    }
   }
 });
 

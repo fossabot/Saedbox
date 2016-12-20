@@ -12,7 +12,10 @@ describe('Users', () => {
     beforeEach((done) => { //Before each test we empty the database
         models.collections.user.destroy({}, function(err) {
 		    if(err) return(err);
-		    done();
+		    models.collections.group.destroy({}, function(err){
+		    	if(err) return(err);
+		    	done();
+		    })
 		});        
     });     
 
@@ -30,4 +33,34 @@ describe('Users', () => {
 	        });
 	    });
 	});
+
+	//Testing the POST route
+	describe('/POST /api/users', () => {
+      	it('it should not POST a user without name field', (done) => {
+        	let group = {
+        		name: "Basic"
+        	};
+        	models.collections.group.create(group, function(err, model) {
+			    if(err) return(err);
+
+			    let user = {
+	            	group: model.id,
+	            	password: "plop"
+	        	};
+			   	chai.request("http://127.0.0.1:9002")
+	            	.post('/api/users')
+	            	.send(user)
+	            	.end((err, res) => {
+	            		let result=res.body;
+	                	res.should.have.status(400);
+	                	result.should.be.a('object');
+	                	result.should.have.property('error');
+	                	result.error.should.have.property('name');
+	                	result.error.name.should.have.property('kind').eql('required');
+	              	done();
+	           	}); 
+			});
+      	});
+  	});
+
 });
