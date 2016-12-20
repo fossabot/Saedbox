@@ -38,7 +38,15 @@ describe('Users', () => {
 	describe('/POST /api/users', () => {
       	it('it should not POST a user without name field', (done) => {
         	let group = {
-        		name: "Basic"
+        		name: "Basic",
+        		p_cont_m:true,
+			    o_cont_m:false,
+			    manage_users:false,
+			    manage_groups:false,
+			    p_recp_m:true,
+			    o_recp_m:false,
+			    account_delete:true,
+			    deletable: false
         	};
         	models.collections.group.create(group, function(err, model) {
 			    if(err) return(err);

@@ -70,7 +70,7 @@ router.post('/api/users', function(req, res) {
 
 //Get User infos
 router.get('/api/users/:id', function(req, res) {
-    models.collections.user.populate('group').populate('container').findOne({ id: req.params.id }, function(err, model) {
+    models.collections.user.findOne({ id: req.params.id }, function(err, model) {
     if(err) resp.sendError(res,err);
     resp.send(res,model);
   });
@@ -121,7 +121,7 @@ router.get('/api/groups/:id', function(req, res) {
   });
 });
 
-//Delete a user
+//Delete a group
 router.delete('/api/groups/:id', function(req, res) {
   models.collections.group.destroy({ id: req.params.id }, function(err) {
     if(err) resp.sendError(res,err);
@@ -129,7 +129,7 @@ router.delete('/api/groups/:id', function(req, res) {
   });
 });
 
-//Update a user
+//Update a group
 router.put('/api/groups/:id', function(req, res) {
   // Don't pass ID to update
   delete req.body.id;
