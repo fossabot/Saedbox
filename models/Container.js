@@ -1,6 +1,6 @@
 'use strict'
 
-let Waterline = require('waterline');
+var Waterline = require('waterline');
 
 var Container = Waterline.Collection.extend({
 
