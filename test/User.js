@@ -3,6 +3,7 @@ var models = require('../models');
 //Require the dev-dependencies
 var chai = require('chai');
 var chaiHttp = require('chai-http');
+var server = require('../app'); //Used to properly load the app and waterline
 
 chai.use(chaiHttp);
 //Our parent block
