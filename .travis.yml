@@ -9,3 +9,6 @@ before_script:
 
 after_script:
   - "jshint --config=.jshintrc ."
+
+env:
+  - DOCKER_SOCKET=test
