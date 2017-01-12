@@ -1,10 +1,10 @@
 'use strict'
 
-let models = require('../models');
+var models = require('../models');
 
 //Require the dev-dependencies
-let chai = require('chai');
-let chaiHttp = require('chai-http');
+var chai = require('chai');
+var chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 //Our parent block
@@ -26,7 +26,7 @@ describe('Users', () => {
 	            .get('/api/users')
 	            .end((err, res) => {
 	                res.should.have.status(200);
-	                let data = res.body.data;
+	                var data = res.body.data;
 	                data.should.be.a('array');
 	                data.length.should.be.eql(0);
 	            done();
@@ -38,7 +38,7 @@ describe('Users', () => {
 	describe('/GET /api/users', () => {
 	    it('it should GET all the users', (done) => {
 
-	    	let group = {
+	    	var group = {
         		name: "Basic",
         		p_cont_m:true,
 			    o_cont_m:false,
@@ -52,7 +52,7 @@ describe('Users', () => {
         	models.collections.group.create(group, function(err, model) {
 			    if(err) return(err);
 
-				let users=[
+				var users=[
 					{group: model.id, password: "plop", name:"plop1"},
 					{group: model.id, password: "plop", name:"plop2"}
 				];
@@ -65,7 +65,7 @@ describe('Users', () => {
 			            .get('/api/users')
 			            .end((err, res) => {
 			                res.should.have.status(200);
-			                let data = res.body.data;
+			                var data = res.body.data;
 			                data.should.be.a('array');
 			                data.length.should.be.eql(2);
 			            done();
@@ -81,7 +81,7 @@ describe('Users', () => {
 	//Testing the POST route without name
 	describe('/POST /api/users', () => {
       	it('it should not POST a user without name fields', (done) => {
-        	let group = {
+        	var group = {
         		name: "Basic",
         		p_cont_m:true,
 			    o_cont_m:false,
@@ -95,7 +95,7 @@ describe('Users', () => {
         	models.collections.group.create(group, function(err, model) {
 			    if(err) return(err);
 
-			    let user = {
+			    var user = {
 	            	group: model.id,
 	            	password: "plop"
 	        	};
@@ -105,7 +105,7 @@ describe('Users', () => {
 	            	.set('content-type', 'application/x-www-form-urlencoded')
 	            	.send(user)
 					.end(function(error, response) {
-		                let result=error.response.res.body.error;
+		                var result=error.response.res.body.error;
 		               	result.should.have.status(400);
 		               	result.should.be.a('object');
 		               	result.should.have.property('invalidAttributes');
@@ -119,7 +119,7 @@ describe('Users', () => {
 	//Testing the POST route without password
 	describe('/POST /api/users', () => {
       	it('it should not POST a user without password fields', (done) => {
-        	let group = {
+        	var group = {
         		name: "Basic",
         		p_cont_m:true,
 			    o_cont_m:false,
@@ -133,7 +133,7 @@ describe('Users', () => {
         	models.collections.group.create(group, function(err, model) {
 			    if(err) return(err);
 
-			    let user = {
+			    var user = {
 	            	group: model.id,
 	            	name: "plop"
 	        	};
@@ -143,7 +143,7 @@ describe('Users', () => {
 	            	.set('content-type', 'application/x-www-form-urlencoded')
 	            	.send(user)
 					.end(function(error, response) {
-		                let result=error.response.res.body.error;
+		                var result=error.response.res.body.error;
 		               	result.should.have.status(400);
 		               	result.should.be.a('object');
 		               	result.should.have.property('invalidAttributes');
@@ -157,7 +157,7 @@ describe('Users', () => {
 	//Testing the POST route without all parameters
 	describe('/POST /api/users', () => {
       	it('it should not POST a user without password fields', (done) => {
-        	let group = {
+        	var group = {
         		name: "Basic",
         		p_cont_m:true,
 			    o_cont_m:false,
@@ -171,7 +171,7 @@ describe('Users', () => {
         	models.collections.group.create(group, function(err, model) {
 			    if(err) return(err);
 
-			    let user = {
+			    var user = {
 	            	group: model.id,
 	            	name: "plop",
 	            	password: "plop"
@@ -182,7 +182,7 @@ describe('Users', () => {
 	            	.set('content-type', 'application/x-www-form-urlencoded')
 	            	.send(user)
 					.end(function(error, response) {
-		                let result=response.body.data;
+		                var result=response.body.data;
 		               	response.should.have.status(200);
 		               	result.should.be.a('object');
 		               	result.should.have.property('name').eql("plop");

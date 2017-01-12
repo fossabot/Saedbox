@@ -1,14 +1,14 @@
 'use strict'
 
-let express = require("express");
-let docker = require("../libs/docker.js");
-let system = require("../libs/system.js");
-let router = express.Router();
+var express = require("express");
+var docker = require("../libs/docker.js");
+var system = require("../libs/system.js");
+var router = express.Router();
 
-let HelperResponse = require('../libs/Helpers/Response.js');
-let resp = new HelperResponse();
+var HelperResponse = require('../libs/Helpers/Response.js');
+var resp = new HelperResponse();
 
-let models = require('../models');
+var models = require('../models');
 
 //Get API base
 router.get("/", function(req, res, next) {
