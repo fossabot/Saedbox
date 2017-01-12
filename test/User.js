@@ -4,6 +4,7 @@ var models = require('../models');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var server = require('../app'); //Used to properly load the app and waterline
+var should = chai.should(); //DO NOT REMOVE
 
 chai.use(chaiHttp);
 //Our parent block
