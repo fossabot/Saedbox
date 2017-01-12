@@ -5,6 +5,7 @@ node_js:
 
 before_script:
   - "npm install -g jshint"
+  - "touch /var/run/docker.sock"
 
 after_script:
   - "jshint --config=.jshintrc ."
