@@ -1,6 +1,7 @@
 let Docker = require('dockerode');
 let fs     = require('fs');
-var socket = process.env.DOCKER_SOCKET || '/var/run/docker.sock';
+var config = require('../config.json');
+var socket = config.docker-socket || '/var/run/docker.sock';
 var stats  = fs.statSync(socket);
 
 if (!stats.isSocket()) {
