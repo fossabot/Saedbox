@@ -2,6 +2,7 @@ var express = require("express"),
 	  _ = require('@sailshq/lodash'),
     app = express(),
     path = require('path'),
+		config = require('./config.json'),
     Waterline = require('waterline'),
     bodyParser = require('body-parser'),
     methodOverride = require('method-override');
@@ -25,16 +26,17 @@ models.initialize(connections, function(err, models) {
   app.use(methodOverride());
 
   var routes = require("./routes/api");
-  
-  app.use('/', routes);
+
+  app.use(config.webroot || "/", routes);
 
   app.use(function(req, res, next) {
-    var err = new Error('Page introuvable');
-    err.status = 404;
-    next(err);
+		res.status(404);
+		res.send({"data":{
+			code: 404,
+			error : 'Not Found',
+		}});
+		return;
   });
 
-  app.listen(9002);
-
-  module.exports = app; // for testing
+  app.listen(config.port || 9000);
 });
