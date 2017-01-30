@@ -1,0 +1,5 @@
+{
+  "port": 9000,
+  "docker-socket" : "/var/run/docker.sock",
+  "webroot" : "/truc"
+}
