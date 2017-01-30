@@ -5,6 +5,7 @@ var chai = require('chai');
 var chaiHttp = require('chai-http');
 var server = require('../app'); //Used to properly load the app and waterline
 var should = chai.should(); //DO NOT REMOVE
+var address = "localhost"+":"+require('../config.json').port+require('../config.json').webroot;
 
 chai.use(chaiHttp);
 //Our parent block
@@ -16,13 +17,13 @@ describe('Users', () => {
 		    	if(err) return(err);
 		    	done();
 		    })
-		});        
-    });     
+		});
+    });
 
 	//Testing the GET route without data
 	describe('/GET /api/users', () => {
 	    it('it should GET an empty array', (done) => {
-	        chai.request("http://127.0.0.1:9002")
+	        chai.request(address)
 	            .get('/api/users')
 	            .end((err, res) => {
 	                res.should.have.status(200);
@@ -61,7 +62,7 @@ describe('Users', () => {
 				    if(err) return(err);
 
 
-				    chai.request("http://127.0.0.1:9002")
+				    chai.request(address)
 			            .get('/api/users')
 			            .end((err, res) => {
 			                res.should.have.status(200);
@@ -74,7 +75,7 @@ describe('Users', () => {
 				});
 			});
 
-	        
+
 	    });
 	});
 
@@ -100,7 +101,7 @@ describe('Users', () => {
 	            	password: "plop"
 	        	};
 
-			   	chai.request("http://127.0.0.1:9002")
+			   	chai.request(address)
 	            	.post('/api/users')
 	            	.set('content-type', 'application/x-www-form-urlencoded')
 	            	.send(user)
@@ -138,7 +139,7 @@ describe('Users', () => {
 	            	name: "plop"
 	        	};
 
-			   	chai.request("http://127.0.0.1:9002")
+			   	chai.request(address)
 	            	.post('/api/users')
 	            	.set('content-type', 'application/x-www-form-urlencoded')
 	            	.send(user)
@@ -177,7 +178,7 @@ describe('Users', () => {
 	            	password: "plop"
 	        	};
 
-			   	chai.request("http://127.0.0.1:9002")
+			   	chai.request(address)
 	            	.post('/api/users')
 	            	.set('content-type', 'application/x-www-form-urlencoded')
 	            	.send(user)

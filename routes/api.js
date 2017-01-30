@@ -2,7 +2,7 @@
 
 var express = require("express");
 var docker = require("../libs/docker.js");
-var system = require("../libs/system.js");
+var system = require("../libs/Helpers/System.js");
 var router = express.Router();
 
 var HelperResponse = require('../libs/Helpers/Response.js');
@@ -143,7 +143,6 @@ router.put('/api/groups/:id', function(req, res) {
 
 router.get('/api/system', function(req, res) {
   resp.send(res, systemInfo.getAll());
-	//system.get(resp.send.bind(resp,res));
 })
 
 module.exports = router;

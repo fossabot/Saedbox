@@ -1,5 +1,7 @@
-let Docker = require('dockerode');
-let fs     = require('fs');
+'use strict'
+
+var Docker = require('dockerode');
+var fs     = require('fs');
 var socket = process.env.DOCKER_SOCKET || '/var/run/docker.sock';
 var stats  = fs.statSync(socket);
 
