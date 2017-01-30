@@ -5,7 +5,7 @@ var chai = require('chai');
 var chaiHttp = require('chai-http');
 var server = require('../app'); //Used to properly load the app and waterline
 var should = chai.should(); //DO NOT REMOVE
-var address = "localhost"+":"+require('../config.json').port+require('../config.json').webroot;
+var address = "localhost"+":"+require('../config.json').port;
 
 chai.use(chaiHttp);
 //Our parent block

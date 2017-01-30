@@ -1,15 +1,16 @@
 'use strict'
 
-var express = require("express");
-var docker = require("../libs/docker.js");
-var system = require("../libs/Helpers/System.js");
-var router = express.Router();
+let express = require("express");
+let docker = require("../libs/docker.js");
+let router = express.Router();
 
-var HelperResponse = require('../libs/Helpers/Response.js');
-var resp = new HelperResponse();
+let HelperResponse = require('../libs/Helpers/Response.js');
+let resp = new HelperResponse();
 
-var models = require('../models');
+let HelperSystem = require('../libs/Helpers/System.js');
+let systemInfo = new HelperSystem();
 
+let models = require('../models');
 //Get API base
 router.get("/", function(req, res, next) {
 	resp.send(res, 'Thanks to check documention for API use');

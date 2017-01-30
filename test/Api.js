@@ -3,8 +3,7 @@ var chai = require('chai');
 var chaiHttp = require('chai-http');
 var server = require('../app');
 var should = chai.should(); //DO NOT REMOVE
-var address = "localhost"+":"+require('../config.json').port+require('../config.json').webroot;
-console.log(address);
+var address = "localhost"+":"+require('../config.json').port;
 
 chai.use(chaiHttp);
 
