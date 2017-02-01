@@ -2,11 +2,13 @@ var express = require("express"),
 	  _ = require('@sailshq/lodash'),
     app = express(),
     path = require('path'),
-		config = require('./config.json'),
-    Waterline = require('waterline'),
+		Waterline = require('waterline'),
     bodyParser = require('body-parser'),
-    methodOverride = require('method-override');
-
+    methodOverride = require('method-override'),
+		fs = require('fs');
+if (fs.existsSync('./config.json')) {
+	global.config = require('./config.json');
+}
 
 var models = require('./models'),
 	  connections = require('./config/connections.js');
