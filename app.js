@@ -28,6 +28,12 @@ models.initialize(connections, function(err, models) {
   app.use(methodOverride());
 
   var routes = require("./routes/api");
+	
+	// allow CORS:
+	app.use(function (req, res, next) {
+	  res.setHeader('Access-Control-Allow-Origin', '*');
+	  next();
+	});
 
   app.use(config.webroot || "/", routes);
 

@@ -66,7 +66,7 @@ System.prototype.updateLoad = function() {
 };
 
 System.prototype.setLoad = function(loadData) {
-  this.loadInfo.avgload = loadData.avgload;
+  this.loadInfo.avgload = loadData.currentload;
 
   this.systemInfo.CPU = this.loadInfo;
 };
