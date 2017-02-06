@@ -172,7 +172,7 @@ router.get('/api/users/:id', isLoggedIn, function(req, res) {
   });
 });
 
-//Delete a user
+//Delete a user -- TODO : test if user has id 1 or if current_user has rights to do so
 router.delete('/api/users/:id', isLoggedIn, function(req, res) {
   models.collections.user.destroy({ id: req.params.id }, function(err) {
     if(err) return resp.sendError(res,err);

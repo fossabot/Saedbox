@@ -16,7 +16,7 @@ if (fs.existsSync('./config.json')) {
 }
 
 var models = require('./models'),
-		connections = require('./config/connections.js');
+	  connections = require('./config/connections.js');
 
 //Loading DB adapters for waterline
 var diskAdapter = require('sails-disk');
@@ -65,6 +65,9 @@ models.initialize(connections, function(err, models) {
 		}});
 		return;
   });
+
+  //Bootstraping admin group and account
+  var bootstrap = require('./config/bootstrap')(models,config);
 
   app.listen(config.port || 9000);
 });
