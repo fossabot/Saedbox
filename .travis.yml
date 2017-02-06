@@ -14,7 +14,6 @@ before_script:
   - $CXX --version
   - "npm install -g jshint"
 install: true
-script: npm test
 after_script:
   - "jshint --config=.jshintrc ."
 env:
