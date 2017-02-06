@@ -13,7 +13,7 @@ sudo: false
 before_script:
   - $CXX --version
   - "npm install -g jshint"
-install: true
+  - "npm install"
 after_script:
   - "jshint --config=.jshintrc ."
 env:
