@@ -9,9 +9,7 @@ var address = "localhost"+":"+config.port;
 
 chai.use(chaiHttp);
 //Our parent block
-describe('Users', () => {
-	this.timeout(15000);
-	
+describe('Users', () => {	
     beforeEach((done) => { //Before each test we empty the database
         models.collections.user.destroy({}, function(err) {
 		    if(err) return(err);
@@ -56,8 +54,8 @@ describe('Users', () => {
 			    if(err) return(err);
 
 				var users=[
-					{group: model.id, password: "plop", name:"plop1"},
-					{group: model.id, password: "plop", name:"plop2"}
+					{group: model.id, password: "plop", name:"plop1", email: "plop@plop.com"},
+					{group: model.id, password: "plop", name:"plop2", email: "plop2@plop.com"}
 				];
 
 		    	models.collections.user.create(users, function(err, response) {
@@ -100,6 +98,7 @@ describe('Users', () => {
 
 			    var user = {
 	            	group: model.id,
+	            	email: "plop@plop.com",
 	            	password: "plop"
 	        	};
 
@@ -138,7 +137,8 @@ describe('Users', () => {
 
 			    var user = {
 	            	group: model.id,
-	            	name: "plop"
+	            	name: "plop",
+	            	email: "plop@plop.com"
 	        	};
 
 			   	chai.request(address)
@@ -159,7 +159,7 @@ describe('Users', () => {
 
 	//Testing the POST route without all parameters
 	describe('/POST /api/users', () => {
-      	it('it should not POST a user without password fields', (done) => {
+      	it('it should POST a user with all required fields', (done) => {
         	var group = {
         		name: "Basic",
         		p_cont_m:true,
@@ -177,6 +177,7 @@ describe('Users', () => {
 			    var user = {
 	            	group: model.id,
 	            	name: "plop",
+	            	email: "plop@plop.com",
 	            	password: "plop"
 	        	};
 

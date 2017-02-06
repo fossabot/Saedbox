@@ -106,7 +106,6 @@ router.get("/api/users", isLoggedIn, function(req, res, next) {
           if(err) return resp.sendError(res,err);
 
           item.group=resgroup;
-          console.log(item);
           
           //Getting containers infos
           var containers=[];
