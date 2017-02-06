@@ -18,8 +18,7 @@ script: npm test
 after_script:
   - "jshint --config=.jshintrc ."
 env:
-  - DOCKER_SOCKET="test"
-  - CXX=g++-4.8
+  - DOCKER_SOCKET="test" CXX=g++-4.8
 
  
 
