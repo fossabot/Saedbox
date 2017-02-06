@@ -10,6 +10,8 @@ var address = "localhost"+":"+config.port;
 chai.use(chaiHttp);
 //Our parent block
 describe('Users', () => {
+	this.timeout(15000);
+	
     beforeEach((done) => { //Before each test we empty the database
         models.collections.user.destroy({}, function(err) {
 		    if(err) return(err);
