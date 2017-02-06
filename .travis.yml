@@ -6,17 +6,22 @@ node_js:
 addons:
   apt:
     sources:
-      - ubuntu-toolchain-r-test
+    - ubuntu-toolchain-r-test
     packages:
-      - gcc-4.8
-      - g++-4.8
-
+    - g++-4.8
+sudo: false
 before_script:
+  - $CXX --version
   - "npm install -g jshint"
-
+install: true
+script: npm test
 after_script:
   - "jshint --config=.jshintrc ."
-
 env:
   - DOCKER_SOCKET="test"
-  - TRAVIS=travis CXX=g++-4.8
+  - CXX=g++-4.8
+
+ 
+
+
+
