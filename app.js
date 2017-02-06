@@ -45,7 +45,7 @@ models.initialize(connections, function(err, models) {
 	app.use(passport.initialize());
 	app.use(passport.session()); // persistent login sessions
 
-	require('./config/passport')(passport); //passport config
+  require('./config/passport')(passport); //passport config
 
   var routes = require("./routes/api");
 	
