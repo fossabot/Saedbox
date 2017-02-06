@@ -54,8 +54,8 @@ describe('Users', () => {
 			    if(err) return(err);
 
 				var users=[
-					{group: model.id, password: "plop", name:"plop1", email: "plop@plop.com"},
-					{group: model.id, password: "plop", name:"plop2", email: "plop2@plop.com"}
+					{group: model.id, password: "plopplop", name:"plop1", email: "plop@plop.com"},
+					{group: model.id, password: "plopplop", name:"plop2", email: "plop2@plop.com"}
 				];
 
 		    	models.collections.user.create(users, function(err, response) {
@@ -99,7 +99,7 @@ describe('Users', () => {
 			    var user = {
 	            	group: model.id,
 	            	email: "plop@plop.com",
-	            	password: "plop"
+	            	password: "plopplop"
 	        	};
 
 			   	chai.request(address)
@@ -178,7 +178,7 @@ describe('Users', () => {
 	            	group: model.id,
 	            	name: "plop",
 	            	email: "plop@plop.com",
-	            	password: "plop"
+	            	password: "plopplop"
 	        	};
 
 			   	chai.request(address)
