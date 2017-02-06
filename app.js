@@ -1,17 +1,22 @@
 var express = require("express"),
-	  _ = require('@sailshq/lodash'),
+		_ = require('@sailshq/lodash'),
     app = express(),
     path = require('path'),
 		Waterline = require('waterline'),
+		helmet = require('helmet'),
     bodyParser = require('body-parser'),
+    cookieParser = require('cookie-parser'),
+    session = require('express-session'),
     methodOverride = require('method-override'),
-		fs = require('fs');
+		fs = require('fs'),
+		passport = require('passport');
+
 if (fs.existsSync('./config.json')) {
 	global.config = require('./config.json');
 }
 
 var models = require('./models'),
-	  connections = require('./config/connections.js');
+		connections = require('./config/connections.js');
 
 //Loading DB adapters for waterline
 var diskAdapter = require('sails-disk');
@@ -22,10 +27,25 @@ models.initialize(connections, function(err, models) {
   app.models = models.collections;
   app.connections = connections.connections;
 
-
-  app.use(bodyParser.urlencoded({ extended: false }));
-  app.use(bodyParser.json());
+  app.use(helmet()); // Add multiple securities 
+  app.disable('x-powered-by'); //Remove the indication that the app is powered by express
+  app.use(cookieParser()); // read cookies (needed for auth)
+  app.use(bodyParser.urlencoded({ extended: false })); // get information from url-encoded data
+  app.use(bodyParser.json()); // get information from html forms
   app.use(methodOverride());
+
+  // passport initialization
+  app.set('trust proxy', 1) // trust first proxy
+	app.use(session({ // session params
+		secret: config.secret,
+		name : 'sessionId',
+		resave: false,
+	  saveUninitialized: true
+	})); 
+	app.use(passport.initialize());
+	app.use(passport.session()); // persistent login sessions
+
+	require('./config/passport')(passport); //passport config
 
   var routes = require("./routes/api");
 	
