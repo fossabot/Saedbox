@@ -41,8 +41,23 @@ var User = Waterline.Collection.extend({
   },
   /** Function to encrypt user password before storing the new user record */
   beforeCreate: function(user, cb) {
+    if (user.password.length < 8)
+      return cb("Password should be at least 8 characters long.");
+
     user.password = bcrypt.hashSync(user.password, 10);
     cb();
+  },
+  beforeUpdate: function(user, cb) {
+    if (typeof medecin.password === 'undefined') {
+      cb();
+    }
+    else{
+      if (user.password.length < 8)
+        return cb("Password should be at least 8 characters long.");
+
+      user.password = bcrypt.hashSync(user.password, 10);
+      cb();
+    }
   }
 });
 
