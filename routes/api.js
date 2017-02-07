@@ -19,7 +19,7 @@ require('../config/passport')(passport);
 
 //Get API base
 router.get("/", function(req, res, next) {
-	resp.send(res, 'Thanks to check documention for API use');
+	resp.send(res, 'Check documentation for API usage');
 });
 
 //Get current user info
@@ -98,7 +98,7 @@ router.get("/api/users", isLoggedIn, function(req, res, next) {
 
   models.collections.user.find().exec(function(err, resultusers) {
   if(err) return resp.sendError(res,err);
-  
+
     async.forEach(resultusers,
       function(item, callback){
         //Getting group value
@@ -106,7 +106,7 @@ router.get("/api/users", isLoggedIn, function(req, res, next) {
           if(err) return resp.sendError(res,err);
 
           item.group=resgroup;
-          
+
           //Getting containers infos
           var containers=[];
           async.forEach(item.containers,
@@ -125,7 +125,7 @@ router.get("/api/users", isLoggedIn, function(req, res, next) {
             }
           );
         });
-        
+
       },
       function(err){
         resp.send(res,result);
@@ -237,7 +237,7 @@ router.put('/api/groups/:id', isLoggedIn, function(req, res) {
 
 // ------------- System-related routes -------------
 
-router.get('/api/system', function(req, res) {
+router.get('/api/system', isLoggedIn,function(req, res) {
   resp.send(res, systemInfo.getAll());
 });
 
@@ -270,7 +270,7 @@ module.exports = router;
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
 
-    // if user is authenticated in the session, carry on 
+    // if user is authenticated in the session, carry on
     if (req.isAuthenticated())
       return next();
 
