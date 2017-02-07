@@ -1,12 +1,19 @@
 var express = require("express"),
-	  _ = require('@sailshq/lodash'),
+		_ = require('@sailshq/lodash'),
     app = express(),
     path = require('path'),
-		config = require('./config.json'),
-    Waterline = require('waterline'),
+		Waterline = require('waterline'),
+		helmet = require('helmet'),
     bodyParser = require('body-parser'),
-    methodOverride = require('method-override');
+    cookieParser = require('cookie-parser'),
+    session = require('express-session'),
+    methodOverride = require('method-override'),
+		fs = require('fs'),
+		passport = require('passport');
 
+if (fs.existsSync('./config.json')) {
+	global.config = require('./config.json');
+}
 
 var models = require('./models'),
 	  connections = require('./config/connections.js');
@@ -20,12 +27,33 @@ models.initialize(connections, function(err, models) {
   app.models = models.collections;
   app.connections = connections.connections;
 
-
-  app.use(bodyParser.urlencoded({ extended: false }));
-  app.use(bodyParser.json());
+  app.use(helmet()); // Add multiple securities 
+  app.disable('x-powered-by'); //Remove the indication that the app is powered by express
+  app.use(cookieParser()); // read cookies (needed for auth)
+  app.use(bodyParser.urlencoded({ extended: false })); // get information from url-encoded data
+  app.use(bodyParser.json()); // get information from html forms
   app.use(methodOverride());
 
+  // passport initialization
+  app.set('trust proxy', 1) // trust first proxy
+	app.use(session({ // session params
+		secret: config.secret,
+		name : 'sessionId',
+		resave: false,
+	  saveUninitialized: true
+	})); 
+	app.use(passport.initialize());
+	app.use(passport.session()); // persistent login sessions
+
+  require('./config/passport')(passport); //passport config
+
   var routes = require("./routes/api");
+	
+	// allow CORS:
+	app.use(function (req, res, next) {
+	  res.setHeader('Access-Control-Allow-Origin', '*');
+	  next();
+	});
 
   app.use(config.webroot || "/", routes);
 
@@ -37,6 +65,9 @@ models.initialize(connections, function(err, models) {
 		}});
 		return;
   });
+
+  //Bootstraping admin group and account
+  var bootstrap = require('./config/bootstrap')(models,config);
 
   app.listen(config.port || 9000);
 });

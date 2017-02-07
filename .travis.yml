@@ -1,10 +1,25 @@
 language: node_js
 node_js:
+  - node
   - 6
   - 5
-
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.8
+sudo: false
 before_script:
+  - $CXX --version
   - "npm install -g jshint"
-
+  - "npm install"
 after_script:
   - "jshint --config=.jshintrc ."
+env:
+  - DOCKER_SOCKET="test" CXX=g++-4.8
+
+ 
+
+
+
