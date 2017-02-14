@@ -261,7 +261,8 @@ router.post('/api/login', function(req,res,next){
 
 //Logout route
 router.get('/api/logout', isLoggedIn, function(req,res){
-  resp.send(res,req.logout());
+  req.logout();
+  resp.send(res,"User successfully logged-out.");
 });
 
 module.exports = router;
