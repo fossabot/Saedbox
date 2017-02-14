@@ -30,7 +30,7 @@ var User = Waterline.Collection.extend({
     },
     containers:{
     	collection: 'container',
-      	via: 'user'
+      	via: 'owner'
     },
     /** Function to convert record to Json */
     toJSON: function() {

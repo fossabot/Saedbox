@@ -9,8 +9,17 @@ var Container = Waterline.Collection.extend({
 
   attributes: {
     id: 'string',
-    user:{
+    owner:{
     	model: 'user'
+    },
+    read:{
+    	type: 'array'
+    },
+    write:{
+    	type: 'array'
+    },
+    reboot:{
+    	type: 'array'
     }
   }
 });

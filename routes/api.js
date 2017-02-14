@@ -260,9 +260,8 @@ router.post('/api/login', function(req,res,next){
 });
 
 //Logout route
-router.post('/api/login', isLoggedIn, function(req,res){
-  req.logout();
-  resp.send(res,"User successfully logged-out");
+router.get('/api/logout', isLoggedIn, function(req,res){
+  resp.send(res,req.logout());
 });
 
 module.exports = router;
@@ -279,4 +278,17 @@ function isLoggedIn(req, res, next) {
 
     // if they aren't send not connected error and exit the parent function with return
     return resp.sendError(res,"User not connected");
+}
+
+
+// function to get the group rights
+function getGroupRights(req) {
+  // if user is authenticated in the session, carry on
+  if (req.isAuthenticated()){
+    models.collections.group.findOne({where: { id: req.user.group }}).exec(function(err,group){
+      return group
+    });
+  }
+    
+  return {message:"User not connected"};
 }
