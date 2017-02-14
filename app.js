@@ -1,6 +1,7 @@
 var express = require("express"),
 		_ = require('@sailshq/lodash'),
     app = express(),
+		cors = require('cors'),
     path = require('path'),
 		Waterline = require('waterline'),
 		helmet = require('helmet'),
@@ -27,7 +28,7 @@ models.initialize(connections, function(err, models) {
   app.models = models.collections;
   app.connections = connections.connections;
 
-  app.use(helmet()); // Add multiple securities 
+  app.use(helmet()); // Add multiple securities
   app.disable('x-powered-by'); //Remove the indication that the app is powered by express
   app.use(cookieParser()); // read cookies (needed for auth)
   app.use(bodyParser.urlencoded({ extended: false })); // get information from url-encoded data
@@ -41,19 +42,19 @@ models.initialize(connections, function(err, models) {
 		name : 'sessionId',
 		resave: false,
 	  saveUninitialized: true
-	})); 
+	}));
 	app.use(passport.initialize());
 	app.use(passport.session()); // persistent login sessions
 
   require('./config/passport')(passport); //passport config
 
   var routes = require("./routes/api");
-	
+
 	// allow CORS:
-	app.use(function (req, res, next) {
-	  res.setHeader('Access-Control-Allow-Origin', '*');
-	  next();
-	});
+	app.use(cors({
+	    origin: config.front,
+	    credentials: true
+	}))
 
   app.use(config.webroot || "/", routes);
 
