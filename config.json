@@ -1,5 +1,6 @@
 {
   "port": 9000,
+  "front" : "localhost:8080",
   "docker-socket" : "/var/run/docker.sock",
   "webroot" : "/",
   "secret" : "myprecioussecret",
