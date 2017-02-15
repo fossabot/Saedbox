@@ -17,6 +17,8 @@ let models = require('../models');
 
 require('../config/passport')(passport);
 
+var bypass=(process.env.DOCKER_SOCKET=="test");
+
 //Get API base
 router.get("/", function(req, res, next) {
 	resp.send(res, 'Check documentation for API usage');
@@ -95,88 +97,126 @@ router.post("/api/services", isLoggedIn, function(req, res, next) {
 //List all users
 router.get("/api/users", isLoggedIn, function(req, res, next) {
   var result=[];
+  //Get the rights of the connected user
+  getGroupRights(req,function(group){
+    if(!bypass && group.message)
+      return resp.sendError(res,group.message)
 
-  models.collections.user.find().exec(function(err, resultusers) {
-  if(err) return resp.sendError(res,err);
+    if(!bypass && !group.manage_users)
+      return resp.sendError(res,"You don't have the rights to access this ressource.")
 
-    async.forEach(resultusers,
-      function(item, callback){
-        //Getting group value
-        models.collections.group.findOne({where:{id:item.group}}).exec(function(err,resgroup){
-          if(err) return resp.sendError(res,err);
+    models.collections.user.find().exec(function(err, resultusers) {
+      if(err) return resp.sendError(res,err);
 
-          item.group=resgroup;
+        async.forEach(resultusers,
+          function(item, callback){
+            //Getting group value
+            models.collections.group.findOne({where:{id:item.group}}).exec(function(err,resgroup){
+              if(err) return resp.sendError(res,err);
 
-          //Getting containers infos
-          var containers=[];
-          async.forEach(item.containers,
-            function(container, callback2){
-              models.collections.container.findOne({where:{id:container}}).exec(function(err,rescontainer){
-                if(err) return resp.sendError(res,err);
+              item.group=resgroup;
 
-                containers.push(rescontainer);
-                callback2();
-              });
-            },
-            function(err){
-              item.containers=containers;
-              result.push(item);
-              callback();
-            }
-          );
-        });
+              //Getting containers infos
+              var containers=[];
+              async.forEach(item.containers,
+                function(container, callback2){
+                  models.collections.container.findOne({where:{id:container}}).exec(function(err,rescontainer){
+                    if(err) return resp.sendError(res,err);
 
-      },
-      function(err){
-        resp.send(res,result);
-      }
-    );
+                    containers.push(rescontainer);
+                    callback2();
+                  });
+                },
+                function(err){
+                  item.containers=containers;
+                  result.push(item);
+                  callback();
+                }
+              );
+            });
+
+          },
+          function(err){
+            resp.send(res,result);
+          }
+        );
+    });
   });
 });
 
 //Create a user
 router.post('/api/users', isLoggedIn, function(req, res) {
-  models.collections.user.create(req.body, function(err, model) {
-    if(err) return resp.sendError(res,err);
-    resp.send(res,model);
+  getGroupRights(req,function(group){
+    if(!bypass && group.message)
+      return resp.sendError(res,group.message)
+
+    if(!bypass && !group.manage_users)
+      return resp.sendError(res,"You don't have the rights to access this ressource.")
+
+    models.collections.user.create(req.body, function(err, model) {
+      if(err) return resp.sendError(res,err);
+      resp.send(res,model);
+    });
   });
 });
 
 //Get User infos
 router.get('/api/users/:id', isLoggedIn, function(req, res) {
-  models.collections.user.findOne({ id: req.params.id }, function(err, model) {
-    if(err) return resp.sendError(res,err);
+  getGroupRights(req,function(group){
+    if(!bypass && group.message)
+      return resp.sendError(res,group.message)
 
-    //Getting group value
-    models.collections.group.findOne({where: { id: model.group }}).exec(function(err,group){
+    if(!bypass && !group.manage_users)
+      return resp.sendError(res,"You don't have the rights to access this ressource.")
 
-      model.group=group;
+    models.collections.user.findOne({ id: req.params.id }, function(err, model) {
+      if(err) return resp.sendError(res,err);
 
-      //Getting containers infos
-      var containers=[];
-      async.forEach(model.containers,
-        function(container, callback2){
-          models.collections.container.findOne({where:{id:container}}).exec(function(err,rescontainer){
-            if(err) return resp.sendError(res,err);
+      //Getting group value
+      models.collections.group.findOne({where: { id: model.group }}).exec(function(err,group){
 
-            containers.push(rescontainer);
-            callback2();
-          });
-        },
-        function(err){
-          model.containers=containers;
-          resp.send(res,model);
-        }
-      );
+        model.group=group;
+
+        //Getting containers infos
+        var containers=[];
+        async.forEach(model.containers,
+          function(container, callback2){
+            models.collections.container.findOne({where:{id:container}}).exec(function(err,rescontainer){
+              if(err) return resp.sendError(res,err);
+
+              containers.push(rescontainer);
+              callback2();
+            });
+          },
+          function(err){
+            model.containers=containers;
+            resp.send(res,model);
+          }
+        );
+      });
     });
   });
 });
 
-//Delete a user -- TODO : test if user has id 1 or if current_user has rights to do so
+//Delete a user
 router.delete('/api/users/:id', isLoggedIn, function(req, res) {
-  models.collections.user.destroy({ id: req.params.id }, function(err) {
-    if(err) return resp.sendError(res,err);
-    resp.send(res,{ status: 'ok' });
+  getGroupRights(req,function(group){
+    if(!bypass && group.message)
+      return resp.sendError(res,group.message)
+
+    if(!bypass && !group.manage_users)
+      return resp.sendError(res,"You don't have the rights to access this ressource.")
+
+    if (!bypass && req.params.id==1)
+      return resp.sendError(res,"You can't delete the administrator.")
+
+    if (!bypass && !group.account_delete)
+      return resp.sendError(res,"You can't delete this user.")
+
+    models.collections.user.destroy({ id: req.params.id }, function(err) {
+      if(err) return resp.sendError(res,err);
+      resp.send(res,{ status: 'ok' });
+    });
   });
 });
 
@@ -184,9 +224,21 @@ router.delete('/api/users/:id', isLoggedIn, function(req, res) {
 router.put('/api/users/:id', isLoggedIn, function(req, res) {
   // Don't pass ID to update
   delete req.body.id;
-  models.collections.user.update({ id: req.params.id }, req.body, function(err, model) {
-    if(err) return resp.sendError(res,err);
-    resp.send(res,model);
+
+  getGroupRights(req,function(group){
+    if(!bypass && group.message)
+      return resp.sendError(res,group.message)
+
+    if(!bypass && !group.manage_users)
+      return resp.sendError(res,"You don't have the rights to access this ressource.")
+
+    if (!bypass && req.params.id==1 && req.user.id!=1)
+      return resp.sendError(res,"Only the administrator can update it's account.")
+
+    models.collections.user.update({ id: req.params.id }, req.body, function(err, model) {
+      if(err) return resp.sendError(res,err);
+      resp.send(res,model);
+    });
   });
 });
 
@@ -195,33 +247,68 @@ router.put('/api/users/:id', isLoggedIn, function(req, res) {
 
 //List all groups
 router.get("/api/groups", isLoggedIn, function(req, res, next) {
-  models.collections.group.find().exec(function(err, result) {
-    if(err) return resp.sendError(res,err);
-    resp.send(res,result);
+  getGroupRights(req,function(group){
+    if(!bypass && group.message)
+      return resp.sendError(res,group.message)
+
+    if(!bypass && !group.manage_groups)
+      return resp.sendError(res,"You don't have the rights to access this ressource.")
+
+    models.collections.group.find().exec(function(err, result) {
+      if(err) return resp.sendError(res,err);
+      resp.send(res,result);
+    });
   });
 });
 
 //Create a group
 router.post('/api/groups', isLoggedIn, function(req, res) {
+    getGroupRights(req,function(group){
+    if(!bypass && group.message)
+      return resp.sendError(res,group.message)
+
+    if(!bypass && !group.manage_groups)
+      return resp.sendError(res,"You don't have the rights to access this ressource.")
+
     models.collections.group.create(req.body, function(err, model) {
-    if(err) return resp.sendError(res,err);
-    resp.send(res,model);
+      if(err) return resp.sendError(res,err);
+      resp.send(res,model);
+    });
   });
 });
 
 //Get group infos
 router.get('/api/groups/:id', isLoggedIn, function(req, res) {
-  models.collections.group.findOne({ id: req.params.id }, function(err, model) {
-    if(err) return resp.sendError(res,err);
-    resp.send(res,model);
+  getGroupRights(req,function(group){
+    if(!bypass && group.message)
+      return resp.sendError(res,group.message)
+
+    if(!bypass && !group.manage_groups)
+      return resp.sendError(res,"You don't have the rights to access this ressource.")
+
+    models.collections.group.findOne({ id: req.params.id }, function(err, model) {
+      if(err) return resp.sendError(res,err);
+      resp.send(res,model);
+    });
   });
 });
 
 //Delete a group
 router.delete('/api/groups/:id', isLoggedIn, function(req, res) {
-  models.collections.group.destroy({ id: req.params.id }, function(err) {
-    if(err) return resp.sendError(res,err);
-    resp.send(res,{ status: 'ok' });
+  getGroupRights(req,function(group){
+    if(!bypass && group.message)
+      return resp.sendError(res,group.message)
+
+    if(!bypass && !group.manage_groups)
+      return resp.sendError(res,"You don't have the rights to access this ressource.")
+
+    if (!bypass && !group.deletable)
+      return resp.sendError(res,"You can't delete this group.")
+
+    models.collections.group.destroy({ id: req.params.id }, function(err) {
+      if(err) return resp.sendError(res,err);
+      resp.send(res,{ status: 'ok' });
+    });
   });
 });
 
@@ -229,9 +316,21 @@ router.delete('/api/groups/:id', isLoggedIn, function(req, res) {
 router.put('/api/groups/:id', isLoggedIn, function(req, res) {
   // Don't pass ID to update
   delete req.body.id;
-  models.collections.group.update({ id: req.params.id }, req.body, function(err, model) {
-    if(err) return resp.sendError(res,err);
-    resp.send(res,model);
+
+  getGroupRights(req,function(group){
+    if(!bypass && group.message)
+      return resp.sendError(res,group.message)
+
+    if(!bypass && !group.manage_groups)
+      return resp.sendError(res,"You don't have the rights to access this ressource.")
+
+    if(!bypass && group.id!=1 && req.params.id==1)
+      return resp.sendError(res,"Only the administrator group can change its group.");
+
+    models.collections.group.update({ id: req.params.id }, req.body, function(err, model) {
+      if(err) return resp.sendError(res,err);
+      resp.send(res,model);
+    });
   });
 });
 
@@ -274,7 +373,7 @@ function isLoggedIn(req, res, next) {
     if (req.isAuthenticated())
       return next();
 
-    if (process.env.DOCKER_SOCKET=="test")
+    if (bypass)
       return next();
 
     // if they aren't send not connected error and exit the parent function with return
@@ -283,13 +382,14 @@ function isLoggedIn(req, res, next) {
 
 
 // function to get the group rights
-function getGroupRights(req) {
+function getGroupRights(req,cb) {
   // if user is authenticated in the session, carry on
   if (req.isAuthenticated()){
     models.collections.group.findOne({where: { id: req.user.group }}).exec(function(err,group){
-      return group
+      cb(group)
     });
   }
-    
-  return {message:"User not connected"};
+  else{
+    cb({message:"User not connected"})
+  }
 }
