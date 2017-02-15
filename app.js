@@ -10,10 +10,12 @@ var express = require("express"),
     session = require('express-session'),
     methodOverride = require('method-override'),
 		fs = require('fs'),
-		passport = require('passport');
+		passport = require('passport'),
+		bypass=(process.env.DOCKER_SOCKET=="test");
 
 if (fs.existsSync('./config.json')) {
 	global.config = require('./config.json');
+	var whitelist = config.front;
 }
 
 var models = require('./models'),
@@ -51,10 +53,14 @@ models.initialize(connections, function(err, models) {
   var routes = require("./routes/api");
 
 	// allow CORS:
-	app.use(cors({
-	    origin: config.front,
+	if (!bypass)
+		app.use(cors({
+	    origin: function(origin, callback){
+	    	console.log(origin);
+	      var originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+	      callback(originIsWhitelisted ? null : 'Bad Request', originIsWhitelisted)},
 	    credentials: true
-	}))
+	  }))
 
   app.use(config.webroot || "/", routes);
 

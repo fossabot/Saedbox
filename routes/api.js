@@ -100,10 +100,10 @@ router.get("/api/users", isLoggedIn, function(req, res, next) {
   //Get the rights of the connected user
   getGroupRights(req,function(group){
     if(!bypass && group.message)
-      return resp.sendError(res,group.message)
+      return resp.sendUnauthorized(res,group.message)
 
     if(!bypass && !group.manage_users)
-      return resp.sendError(res,"You don't have the rights to access this ressource.")
+      return resp.sendUnauthorized(res,"You don't have the rights to access this ressource.")
 
     models.collections.user.find().exec(function(err, resultusers) {
       if(err) return resp.sendError(res,err);
@@ -148,10 +148,10 @@ router.get("/api/users", isLoggedIn, function(req, res, next) {
 router.post('/api/users', isLoggedIn, function(req, res) {
   getGroupRights(req,function(group){
     if(!bypass && group.message)
-      return resp.sendError(res,group.message)
+      return resp.sendUnauthorized(res,group.message)
 
     if(!bypass && !group.manage_users)
-      return resp.sendError(res,"You don't have the rights to access this ressource.")
+      return resp.sendUnauthorized(res,"You don't have the rights to access this ressource.")
 
     models.collections.user.create(req.body, function(err, model) {
       if(err) return resp.sendError(res,err);
@@ -164,10 +164,10 @@ router.post('/api/users', isLoggedIn, function(req, res) {
 router.get('/api/users/:id', isLoggedIn, function(req, res) {
   getGroupRights(req,function(group){
     if(!bypass && group.message)
-      return resp.sendError(res,group.message)
+      return resp.sendUnauthorized(res,group.message)
 
     if(!bypass && !group.manage_users)
-      return resp.sendError(res,"You don't have the rights to access this ressource.")
+      return resp.sendUnauthorized(res,"You don't have the rights to access this ressource.")
 
     models.collections.user.findOne({ id: req.params.id }, function(err, model) {
       if(err) return resp.sendError(res,err);
@@ -202,16 +202,16 @@ router.get('/api/users/:id', isLoggedIn, function(req, res) {
 router.delete('/api/users/:id', isLoggedIn, function(req, res) {
   getGroupRights(req,function(group){
     if(!bypass && group.message)
-      return resp.sendError(res,group.message)
+      return resp.sendUnauthorized(res,group.message)
 
     if(!bypass && !group.manage_users)
-      return resp.sendError(res,"You don't have the rights to access this ressource.")
+      return resp.sendUnauthorized(res,"You don't have the rights to access this ressource.")
 
     if (!bypass && req.params.id==1)
-      return resp.sendError(res,"You can't delete the administrator.")
+      return resp.sendUnauthorized(res,"You can't delete the administrator.")
 
     if (!bypass && !group.account_delete)
-      return resp.sendError(res,"You can't delete this user.")
+      return resp.sendUnauthorized(res,"You can't delete this user.")
 
     models.collections.user.destroy({ id: req.params.id }, function(err) {
       if(err) return resp.sendError(res,err);
@@ -227,13 +227,13 @@ router.put('/api/users/:id', isLoggedIn, function(req, res) {
 
   getGroupRights(req,function(group){
     if(!bypass && group.message)
-      return resp.sendError(res,group.message)
+      return resp.sendUnauthorized(res,group.message)
 
     if(!bypass && !group.manage_users)
-      return resp.sendError(res,"You don't have the rights to access this ressource.")
+      return resp.sendUnauthorized(res,"You don't have the rights to access this ressource.")
 
     if (!bypass && req.params.id==1 && req.user.id!=1)
-      return resp.sendError(res,"Only the administrator can update it's account.")
+      return resp.sendUnauthorized(res,"Only the administrator can update it's account.")
 
     models.collections.user.update({ id: req.params.id }, req.body, function(err, model) {
       if(err) return resp.sendError(res,err);
@@ -249,10 +249,10 @@ router.put('/api/users/:id', isLoggedIn, function(req, res) {
 router.get("/api/groups", isLoggedIn, function(req, res, next) {
   getGroupRights(req,function(group){
     if(!bypass && group.message)
-      return resp.sendError(res,group.message)
+      return resp.sendUnauthorized(res,group.message)
 
     if(!bypass && !group.manage_groups)
-      return resp.sendError(res,"You don't have the rights to access this ressource.")
+      return resp.sendUnauthorized(res,"You don't have the rights to access this ressource.")
 
     models.collections.group.find().exec(function(err, result) {
       if(err) return resp.sendError(res,err);
@@ -265,10 +265,10 @@ router.get("/api/groups", isLoggedIn, function(req, res, next) {
 router.post('/api/groups', isLoggedIn, function(req, res) {
     getGroupRights(req,function(group){
     if(!bypass && group.message)
-      return resp.sendError(res,group.message)
+      return resp.sendUnauthorized(res,group.message)
 
     if(!bypass && !group.manage_groups)
-      return resp.sendError(res,"You don't have the rights to access this ressource.")
+      return resp.sendUnauthorized(res,"You don't have the rights to access this ressource.")
 
     models.collections.group.create(req.body, function(err, model) {
       if(err) return resp.sendError(res,err);
@@ -281,10 +281,10 @@ router.post('/api/groups', isLoggedIn, function(req, res) {
 router.get('/api/groups/:id', isLoggedIn, function(req, res) {
   getGroupRights(req,function(group){
     if(!bypass && group.message)
-      return resp.sendError(res,group.message)
+      return resp.sendUnauthorized(res,group.message)
 
     if(!bypass && !group.manage_groups)
-      return resp.sendError(res,"You don't have the rights to access this ressource.")
+      return resp.sendUnauthorized(res,"You don't have the rights to access this ressource.")
 
     models.collections.group.findOne({ id: req.params.id }, function(err, model) {
       if(err) return resp.sendError(res,err);
@@ -297,13 +297,13 @@ router.get('/api/groups/:id', isLoggedIn, function(req, res) {
 router.delete('/api/groups/:id', isLoggedIn, function(req, res) {
   getGroupRights(req,function(group){
     if(!bypass && group.message)
-      return resp.sendError(res,group.message)
+      return resp.sendUnauthorized(res,group.message)
 
     if(!bypass && !group.manage_groups)
-      return resp.sendError(res,"You don't have the rights to access this ressource.")
+      return resp.sendUnauthorized(res,"You don't have the rights to access this ressource.")
 
     if (!bypass && !group.deletable)
-      return resp.sendError(res,"You can't delete this group.")
+      return resp.sendUnauthorized(res,"You can't delete this group.")
 
     models.collections.group.destroy({ id: req.params.id }, function(err) {
       if(err) return resp.sendError(res,err);
@@ -319,13 +319,13 @@ router.put('/api/groups/:id', isLoggedIn, function(req, res) {
 
   getGroupRights(req,function(group){
     if(!bypass && group.message)
-      return resp.sendError(res,group.message)
+      return resp.sendUnauthorized(res,group.message)
 
     if(!bypass && !group.manage_groups)
-      return resp.sendError(res,"You don't have the rights to access this ressource.")
+      return resp.sendUnauthorized(res,"You don't have the rights to access this ressource.")
 
     if(!bypass && group.id!=1 && req.params.id==1)
-      return resp.sendError(res,"Only the administrator group can change its group.");
+      return resp.sendUnauthorized(res,"Only the administrator group can change its group.");
 
     models.collections.group.update({ id: req.params.id }, req.body, function(err, model) {
       if(err) return resp.sendError(res,err);
