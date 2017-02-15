@@ -352,8 +352,8 @@ router.post('/api/login', function(req,res,next){
       resp.send(res,"User successfully logged-in");
     }
     else {
-      //resp.sendError(res,"Wrong Credentials");
-      resp.sendError(res,req.message);
+      //resp.sendUnauthorized(res,"Wrong Credentials");
+      resp.sendUnauthorized(res,req.message);
     }
   })(req, res, next);
 });
@@ -377,7 +377,7 @@ function isLoggedIn(req, res, next) {
       return next();
 
     // if they aren't send not connected error and exit the parent function with return
-    return resp.sendError(res,"User not connected");
+    return resp.sendUnauthorized(res,"User not connected");
 }
 
 
