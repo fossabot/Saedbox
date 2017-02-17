@@ -62,18 +62,15 @@ router.get("/api/services", isLoggedIn, function(req, res, next) {
 
 //Get Service ID's info
 router.get("/api/services/:id", isLoggedIn, function(req, res, next) {
-	var ID = req.params.id;
-	docker.container(ID,resp.send.bind(resp,res));
+	docker.container(req.params.id,resp.send.bind(resp,res));
 });
 
 //Stop/start Service
 router.get("/api/services/:id/:action", isLoggedIn, function(req, res, next) {
-	var ID = req.params.id;
-	var action = req.params.action;
 	if (req.params.action == "start") {
-		docker.start(ID,resp.send.bind(resp,res));
+		docker.start(req.params.id ,resp.send.bind(resp,res));
 	} else if (req.params.action == "stop") {
-		docker.stop(ID,resp.send.bind(resp,res));
+		docker.stop(req.params.id, resp.send.bind(resp,res));
 	}  else {
 		res.send("That is not a correct use");
 	}
@@ -81,14 +78,16 @@ router.get("/api/services/:id/:action", isLoggedIn, function(req, res, next) {
 
 //Delete Service
 router.delete("/api/services", isLoggedIn, function (req, res, next) {
-	var ID = req.body.id;
-	docker.delete(ID,resp.send.bind(resp,res));
+	getGroupRights(req, function(group) {
+		!bypass && group.p_cont_m ? docker.delete(req.body.id, resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
+	})
 });
 
 //Create new Service
 router.post("/api/services", isLoggedIn, function(req, res, next) {
-	var name = req.body.name;
-	docker.new(name,resp.send.bind(resp,res));
+	getGroupRights(req, function(group) {
+		!bypass && group.p_cont_m ? docker.new(req,resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
+	})
 });
 
 
