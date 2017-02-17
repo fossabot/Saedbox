@@ -48,7 +48,7 @@ var User = Waterline.Collection.extend({
     cb();
   },
   beforeUpdate: function(user, cb) {
-    if (typeof medecin.password === 'undefined') {
+    if (typeof user.password === 'undefined') {
       cb();
     }
     else{

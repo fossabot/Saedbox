@@ -83,7 +83,7 @@ if (process.env.DOCKER_SOCKET!=="test"){
     docker.createContainer(optsc, function(err, container) {
       if (err) {
         if (err.statusCode == 404) {
-          docker.pull(name, function(err, stream) {
+          docker.pull(req.body.name, function(err, stream) {
             docker.modem.followProgress(stream, onFinished);
             function onFinished(err, output) {
               docker.createContainer(optsc, function(err, container) {
@@ -92,7 +92,7 @@ if (process.env.DOCKER_SOCKET!=="test"){
                   cb(container);
                 });
               })
-            };
+            }
           })
         }
       } else {
@@ -100,11 +100,16 @@ if (process.env.DOCKER_SOCKET!=="test"){
           if(err) return resp.sendError(err);
           cb(container);
         });
-      };
+      }
     })
   };
-
-
 }
 
 module.exports = docker;
+
+// function to get the group rights
+function getGroupRights(req,cb) {
+  models.collections.group.findOne({where: { id: req.user.group }}).exec(function(err,group){
+    cb(group)
+  });
+}

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --timeout 15000",
+    "jshint": "jshint -c .jshintrc --exclude-path .jshintignore .",
     "start": "node app.js",
     "startdev": "nodemon app.js"
   },

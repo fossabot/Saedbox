@@ -1,8 +1,9 @@
 
 {
     "undef": true,
-    "unused": true,
+    "unused": false,
     "node": true,
     "multistr": true,
-    "asi":true
+    "asi":true,
+    "esversion":6
 }
