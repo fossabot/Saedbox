@@ -79,12 +79,19 @@ router.get("/api/services/:id/:action", isLoggedIn, function(req, res, next) {
 //Delete Service
 router.delete("/api/services", isLoggedIn, function (req, res, next) {
 	getGroupRights(req, function(group) {
-		!bypass && group.p_cont_m ? docker.delete(req.body.id, resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
+		!bypass && group.p_cont_m ? docker.delete(req, resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
 	})
 });
 
 //Create new Service
 router.post("/api/services", isLoggedIn, function(req, res, next) {
+	getGroupRights(req, function(group) {
+		!bypass && group.p_cont_m ? docker.new(req,resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
+	})
+});
+
+//Update a Service
+router.put("/api/services", isLoggedIn, function(req, res, next) {
 	getGroupRights(req, function(group) {
 		!bypass && group.p_cont_m ? docker.new(req,resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
 	})

@@ -13,7 +13,7 @@ if (process.env.DOCKER_SOCKET!=="test"){
     throw new Error('Are you sure the docker is running?');
   }
   var docker = new Docker({ socketPath: socket });
-  
+
   docker.list = function(cb) {
     docker.listContainers({all: true}, function(err,containers){
       cb(containers);
@@ -38,7 +38,7 @@ if (process.env.DOCKER_SOCKET!=="test"){
     });
   };
 
-  docker.stop = function(id,cb) {
+  docker.stop = function(id, cb) {
     var container = docker.getContainer(id);
     container.stop(function(err,data) {
       if (err) {
@@ -49,13 +49,16 @@ if (process.env.DOCKER_SOCKET!=="test"){
     });
   };
 
-  docker.delete = function(id,cb) {
-    var container = docker.getContainer(id);
+  docker.delete = function(req, cb) {
+    var container = docker.getContainer(req.body.id);
     container.remove(function(err,data) {
       if (err) {
         cb(err);
       } else {
-        cb({statusCode : 200});
+        models.collections.container.destroy({ container_id: container.id }, function(err) {
+          if(err) return resp.sendError(err);
+          cb({statusCode : 200});
+        });
       }
     });
   };
@@ -100,6 +103,8 @@ if (process.env.DOCKER_SOCKET!=="test"){
       };
     })
   };
+
+
 }
 
 module.exports = docker;
