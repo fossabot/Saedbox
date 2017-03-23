@@ -6,7 +6,9 @@
   "scripts": {
     "test": "mocha --timeout 15000",
     "start": "node app.js",
-    "startdev": "nodemon app.js"
+    "startdev": "nodemon app.js",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "author": "xataz",
   "license": "MIT",
@@ -25,7 +27,8 @@
     "passport-local": "^1.0.0",
     "sails-disk": "^0.10",
     "systeminformation": "^3.13",
-    "waterline": "^0.12.2"
+    "waterline": "^0.12.2",
+    "snyk": "^1.25.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",
@@ -34,5 +37,6 @@
     "jshint-stylish": "^2.2.1",
     "mocha": "^3.2.0",
     "nodemon": "^1.11.0"
-  }
+  },
+  "snyk": true
 }
