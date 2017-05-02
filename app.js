@@ -18,6 +18,7 @@ bypass=(process.env.DOCKER_SOCKET=="test");
 if (fs.existsSync('./config/config.json')) {
 	global.config = require('./config/config.json');
 }
+var version = require('./package.json').version
 
 var models = require('./models'),
 connections = require('./libs/db/connections.js');
@@ -76,4 +77,8 @@ models.initialize(connections, function(err, models) {
 	var bootstrap = require('./libs/db/bootstrap')(models,config);
 
 	app.listen(config.port || 9000);
+	console.info("Saedbox version : "+version)
+	console.warn("\n/!\\Saedbox is currently not suitable for production use\n"+
+	             "/!\\We can not guarantee the security of your data")
+	console.info("\nApp Started on port : "+ config.port || 9000)
 });
