@@ -21,7 +21,7 @@ describe('System', () => {
                   data.should.have.a('object');
                   data.should.have.property('CPU').that.is.a('object');
                   data.should.have.property('RAM').that.is.a('object')
-                  data.should.have.property('DISK').that.is.a('array');
+                  data.should.have.property('DISK');
                   data.should.have.property('NET').that.is.a('object');
 	            done();
 	        });
