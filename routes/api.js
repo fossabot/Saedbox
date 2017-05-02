@@ -3,16 +3,12 @@
 let express = require("express");
 let async = require("async");
 let passport = require("passport");
-
 let docker = require("../libs/docker.js");
 let router = express.Router();
-
 let HelperResponse = require('../libs/Helpers/Response.js');
 let resp = new HelperResponse();
-
 let HelperSystem = require('../libs/Helpers/System.js');
 let systemInfo = new HelperSystem();
-
 let models = require('../models');
 
 require('../config/passport')(passport);

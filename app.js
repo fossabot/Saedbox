@@ -13,6 +13,7 @@ fs = require('fs'),
 passport = require('passport'),
 bypass=(process.env.DOCKER_SOCKET=="test");
 
+//checking config file exist
 if (fs.existsSync('./config.json')) {
 	global.config = require('./config.json');
 }
@@ -28,7 +29,6 @@ models.initialize(connections, function(err, models) {
 
 	app.models = models.collections;
 	app.connections = connections.connections;
-
 	app.use(helmet()); // Add multiple securities
 	app.disable('x-powered-by'); //Remove the indication that the app is powered by express
 	app.use(cookieParser()); // read cookies (needed for auth)
