@@ -1,0 +1,9 @@
+{
+  "port": 9000,
+  "docker-socket" : "/var/run/docker.sock",
+  "webroot" : "/",
+  "secret" : "myprecioussecret",
+  "admin_password" : "Saedbox101",
+  "admin_name" : "Admin_Saedbox",
+  "admin_email" : "noreply@admin.com"
+}

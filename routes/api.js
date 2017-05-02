@@ -11,7 +11,7 @@ let HelperSystem = require('../libs/Helpers/System.js');
 let systemInfo = new HelperSystem();
 let models = require('../models');
 
-require('../config/passport')(passport);
+require('../libs/db/passport')(passport);
 
 var bypass=(process.env.DOCKER_SOCKET=="test");
 

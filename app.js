@@ -11,22 +11,25 @@ session = require('express-session'),
 methodOverride = require('method-override'),
 fs = require('fs'),
 passport = require('passport'),
+logger = require('morgan')
 bypass=(process.env.DOCKER_SOCKET=="test");
 
 //checking config file exist
-if (fs.existsSync('./config.json')) {
-	global.config = require('./config.json');
+if (fs.existsSync('./config/config.json')) {
+	global.config = require('./config/config.json');
 }
 
 var models = require('./models'),
-connections = require('./config/connections.js');
+connections = require('./libs/db/connections.js');
 
 //Loading DB adapters for waterline
 var diskAdapter = require('sails-disk');
 
 models.initialize(connections, function(err, models) {
 	if(err) throw err;
-
+	if(app.get('env') == 'development') {
+		app.use(logger('dev'));
+	}
 	app.models = models.collections;
 	app.connections = connections.connections;
 	app.use(helmet()); // Add multiple securities
@@ -47,7 +50,7 @@ models.initialize(connections, function(err, models) {
 	app.use(passport.initialize());
 	app.use(passport.session()); // persistent login sessions
 
-	require('./config/passport')(passport); //passport config
+	require('./libs/db/passport')(passport); //passport config
 
 	var routes = require("./routes/api");
 
@@ -70,7 +73,7 @@ models.initialize(connections, function(err, models) {
 	});
 
 	//Bootstraping admin group and account
-	var bootstrap = require('./config/bootstrap')(models,config);
+	var bootstrap = require('./libs/db/bootstrap')(models,config);
 
 	app.listen(config.port || 9000);
 });
