@@ -58,14 +58,14 @@ router.get("/api/services", isLoggedIn, function(req, res, next) {
 
 //Get Service ID's info
 router.get("/api/services/:id", isLoggedIn, function(req, res, next) {
-	checkExistence(req, res, function(container) {
+	checkContainerRights(req, res, function(container) {
 		container ? docker.container(req.params.id,resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
 	})
 });
 
 //Stop/start Service
 router.get("/api/services/:id/:action", isLoggedIn, function(req, res, next) {
-	checkExistence(req, res, function(container) {
+	checkContainerRights(req, res, function(container) {
 		if(container) {
 			switch(req.params.action) {
 				default:
@@ -409,9 +409,19 @@ function getGroupRights(req,cb) {
 	}
 }
 
-function checkExistence(req,res,cb) {
+function checkContainerRights(req,res,cb) {
+	var bool
   models.collections.container.findOne({where : {container_id : req.params.id}}).exec(function(err,container) {
     if(err) return resp.sendError(err)
-    container ? cb(true) : cb(false)
+    container ? bool = true : bool = false
+		cb(bool)
   });
+	models.collections.container.findOne({where : {container_id : req.params.id}, and:
+		[ {owner : req.user.id},
+		{read : req.user.id},
+	  {write : req.user.id},
+	  {reboot: req.user.id} ]}).exec(function(err,container) {
+		console.log(container)
+	})
+
 }

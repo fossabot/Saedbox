@@ -66,7 +66,7 @@ if (process.env.DOCKER_SOCKET!=="test"){
         cb(err);
       } else {
         models.collections.container.destroy({ container_id: container.id }, function(err) {
-          if(err) return resp.sendError(err);
+          if(err) return err;
           cb({statusCode : 200});
         });
       }
@@ -98,7 +98,7 @@ if (process.env.DOCKER_SOCKET!=="test"){
             function onFinished(err, output) {
               docker.createContainer(optsc, function(err, container) {
                 models.collections.container.create({owner: req.user.id, container_id: container.id}, function(err, model) {
-                  if(err) return resp.sendError(err);
+                  if(err) return err;
                   cb(container);
                 });
               })
@@ -107,7 +107,7 @@ if (process.env.DOCKER_SOCKET!=="test"){
         }
       } else {
         models.collections.container.create({owner: req.user.id, container_id: container.id}, function(err, model) {
-          if(err) return resp.sendError(err);
+          if(err) return err;
           cb(container);
         });
       }
@@ -116,10 +116,3 @@ if (process.env.DOCKER_SOCKET!=="test"){
 }
 
 module.exports = docker;
-
-// function to get the group rights
-function getGroupRights(req,cb) {
-  models.collections.group.findOne({where: { id: req.user.group }}).exec(function(err,group){
-    cb(group)
-  });
-}
