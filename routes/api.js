@@ -58,24 +58,31 @@ router.get("/api/services", isLoggedIn, function(req, res, next) {
 
 //Get Service ID's info
 router.get("/api/services/:id", isLoggedIn, function(req, res, next) {
-	checkExistence(req.params.id, res,function(container) {
+	checkExistence(req, res, function(container) {
 		container ? docker.container(req.params.id,resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
 	})
 });
 
 //Stop/start Service
 router.get("/api/services/:id/:action", isLoggedIn, function(req, res, next) {
-	switch(req.params.action) {
-		default:
-			res.send("That is not a correct use");
-			break;
-		case "start":
-		  docker.start(req.params.id ,resp.send.bind(resp,res));
-		  break;
-		case "stop":
-		  docker.stop(req.params.id, resp.send.bind(resp,res));
-			break;
-	}
+	checkExistence(req, res, function(container) {
+		if(container) {
+			switch(req.params.action) {
+				default:
+					res.send("That is not a correct use");
+					break;
+				case "start":
+					docker.start(req.params.id ,resp.send.bind(resp,res));
+					break;
+				case "stop":
+					docker.stop(req.params.id, resp.send.bind(resp,res));
+					break;
+			}
+		} else {
+			resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
+		}
+	})
+
 });
 
 //Delete Service
@@ -402,8 +409,8 @@ function getGroupRights(req,cb) {
 	}
 }
 
-function checkExistence(id,res,cb) {
-  models.collections.container.findOne({where : {container_id : id}}).exec(function(err,container) {
+function checkExistence(req,res,cb) {
+  models.collections.container.findOne({where : {container_id : req.params.id}}).exec(function(err,container) {
     if(err) return resp.sendError(err)
     container ? cb(true) : cb(false)
   });
