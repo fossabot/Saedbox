@@ -58,17 +58,23 @@ router.get("/api/services", isLoggedIn, function(req, res, next) {
 
 //Get Service ID's info
 router.get("/api/services/:id", isLoggedIn, function(req, res, next) {
-	docker.container(req.params.id,resp.send.bind(resp,res));
+	checkExistence(req.params.id, res,function(container) {
+		container ? docker.container(req.params.id,resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
+	})
 });
 
 //Stop/start Service
 router.get("/api/services/:id/:action", isLoggedIn, function(req, res, next) {
-	if (req.params.action == "start") {
-		docker.start(req.params.id ,resp.send.bind(resp,res));
-	} else if (req.params.action == "stop") {
-		docker.stop(req.params.id, resp.send.bind(resp,res));
-	}  else {
-		res.send("That is not a correct use");
+	switch(req.params.action) {
+		default:
+			res.send("That is not a correct use");
+			break;
+		case "start":
+		  docker.start(req.params.id ,resp.send.bind(resp,res));
+		  break;
+		case "stop":
+		  docker.stop(req.params.id, resp.send.bind(resp,res));
+			break;
 	}
 });
 
@@ -394,4 +400,11 @@ function getGroupRights(req,cb) {
 	else{
 		cb({message:"User not connected"})
 	}
+}
+
+function checkExistence(id,res,cb) {
+  models.collections.container.findOne({where : {container_id : id}}).exec(function(err,container) {
+    if(err) return resp.sendError(err)
+    container ? cb(true) : cb(false)
+  });
 }
