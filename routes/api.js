@@ -416,12 +416,38 @@ function checkContainerRights(req,res,cb) {
     container ? bool = true : bool = false
 		cb(bool)
   });
-	models.collections.container.findOne({where : {container_id : req.params.id}, and:
-		[ {owner : req.user.id},
-		{read : req.user.id},
-	  {write : req.user.id},
-	  {reboot: req.user.id} ]}).exec(function(err,container) {
-		console.log(container)
-	})
-
 }
+
+// function checkContainerRights(req,res,action,cb) {
+// 	switch(action) {
+// 		case default:
+// 		models.collections.container.findOne()
+// 		.where(  { or : [ {owner : req.user.id}, {read : { contains: req.user.id}}, {write : { contains: req.user.id}}, {reboot: { contains: req.user.id}} ] })
+// 		.where({container_id : req.params.id})
+// 		.exec(function(err,container) {
+// 		  container ? cb(true) : cb(false)
+// 		})
+// 		break;
+//
+// 		case "start":
+//    case "stop":
+// 		models.collections.container.findOne()
+// 		.where(  { or : [ {owner : req.user.id}, {write : { contains: req.user.id}}, {reboot: { contains: req.user.id}} ] })
+// 		.where({container_id : req.params.id})
+// 		.exec(function(err,container) {
+// 			container ? cb(true) : cb(false)
+// 		})
+// 		break;
+//
+// 		case "delete":
+//    case "create":
+//    case "update":
+// 		models.collections.container.findOne()
+// 		.where(  { or : [ {owner : req.user.id}, {write : { contains: req.user.id}}} ] })
+// 		.where({container_id : req.params.id})
+// 		.exec(function(err,container) {
+// 			container ? cb(true) : cb(false)
+// 		})
+// 		break;
+// 	}
+// }
