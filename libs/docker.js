@@ -15,9 +15,19 @@ if (process.env.DOCKER_SOCKET!=="test"){
   var docker = new Docker({ socketPath: socket });
 
   docker.list = function(cb) {
-    docker.listContainers({all: true}, function(err,containers){
-      cb(containers);
+    models.collections.container.find().exec(function(err,entries) {
+      var my_containers = []
+      for (var entry of entries) {
+        my_containers.push(entry.container_id)
+    }
+      docker.listContainers({all: true}, function(err,containers){
+        var result = [];
+        for (var container of containers) {
+          if(my_containers.includes(container.Id)) result.push(container);
+        }
+      cb(result)
     });
+  })
   };
 
   docker.container = function(id,cb) {
