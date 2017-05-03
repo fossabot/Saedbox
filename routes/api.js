@@ -58,14 +58,14 @@ router.get("/api/services", isLoggedIn, function(req, res, next) {
 
 //Get Service ID's info
 router.get("/api/services/:id", isLoggedIn, function(req, res, next) {
-	checkContainerRights(req, res, function(container) {
+	checkContainerRights(req, res, "default", function(container) {
 		container ? docker.container(req.params.id,resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
 	})
 });
 
 //Stop/start Service
 router.get("/api/services/:id/:action", isLoggedIn, function(req, res, next) {
-	checkContainerRights(req, res, function(container) {
+	checkContainerRights(req, res, "stop", function(container) {
 		if(container) {
 			switch(req.params.action) {
 				default:
@@ -87,21 +87,21 @@ router.get("/api/services/:id/:action", isLoggedIn, function(req, res, next) {
 
 //Delete Service
 router.delete("/api/services", isLoggedIn, function (req, res, next) {
-	getGroupRights(req, function(group) {
+	getGroupRights(req, res, function(group) {
 		!bypass && group.p_cont_m ? docker.delete(req, resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
 	})
 });
 
 //Create new Service
 router.post("/api/services", isLoggedIn, function(req, res, next) {
-	getGroupRights(req, function(group) {
+	getGroupRights(req, res, function(group) {
 		!bypass && group.p_cont_m ? docker.new(req,resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
 	})
 });
 
 //Update a Service
 router.put("/api/services", isLoggedIn, function(req, res, next) {
-	getGroupRights(req, function(group) {
+	getGroupRights(req, res, function(group) {
 		!bypass && group.p_cont_m ? docker.new(req,resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
 	})
 });
@@ -409,45 +409,39 @@ function getGroupRights(req,cb) {
 	}
 }
 
-function checkContainerRights(req,res,cb) {
-	var bool
-  models.collections.container.findOne({where : {container_id : req.params.id}}).exec(function(err,container) {
-    if(err) return resp.sendError(err)
-    container ? bool = true : bool = false
-		cb(bool)
-  });
-}
+function checkContainerRights(req,res,action,cb) {
+	switch(action) {
+		default:
+		  models.collections.container.findOne()
+		  .where(  { or : [ {owner : req.user.id}, {read : { contains: req.user.id}}, {write : { contains: req.user.id}}, {reboot: { contains: req.user.id}} ] })
+		  .where({container_id : req.params.id})
+		  .exec(function(err,container) {
+		    container ? cb(true) : cb(false)
+		  })
+		break;
 
-// function checkContainerRights(req,res,action,cb) {
-// 	switch(action) {
-// 		case default:
-// 		models.collections.container.findOne()
-// 		.where(  { or : [ {owner : req.user.id}, {read : { contains: req.user.id}}, {write : { contains: req.user.id}}, {reboot: { contains: req.user.id}} ] })
-// 		.where({container_id : req.params.id})
-// 		.exec(function(err,container) {
-// 		  container ? cb(true) : cb(false)
-// 		})
-// 		break;
-//
-// 		case "start":
-//    case "stop":
-// 		models.collections.container.findOne()
-// 		.where(  { or : [ {owner : req.user.id}, {write : { contains: req.user.id}}, {reboot: { contains: req.user.id}} ] })
-// 		.where({container_id : req.params.id})
-// 		.exec(function(err,container) {
-// 			container ? cb(true) : cb(false)
-// 		})
-// 		break;
-//
-// 		case "delete":
-//    case "create":
-//    case "update":
-// 		models.collections.container.findOne()
-// 		.where(  { or : [ {owner : req.user.id}, {write : { contains: req.user.id}}} ] })
-// 		.where({container_id : req.params.id})
-// 		.exec(function(err,container) {
-// 			container ? cb(true) : cb(false)
-// 		})
-// 		break;
-// 	}
-// }
+		case "start":
+    case "stop":
+		  models.collections.container.findOne()
+		  .where(  { or : [ {owner : req.user.id}, {write : { contains: req.user.id}}, {reboot: { contains: req.user.id}} ] })
+		  .where({container_id : req.params.id})
+		  .exec(function(err,container) {
+			  container ? cb(true) : cb(false)
+		  })
+		break;
+
+		case "delete":
+    case "update":
+		  models.collections.container.findOne()
+		  .where(  { or : [ {owner : req.user.id}, {write : { contains: req.user.id}} ] })
+		  .where({container_id : req.body.id})
+		  .exec(function(err,container) {
+				console.log(container)
+			  container ? cb(true) : cb(false)
+		  })
+		break;
+
+		case "create":
+		 console.log("prout")
+	}
+}
