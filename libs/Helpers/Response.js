@@ -14,6 +14,16 @@ Response.prototype.sendError = function(res, error) {
 /**
  * @public
  * @param {!Response} res
+ * @param {!String} error
+ */
+Response.prototype.sendUnauthorized = function(res, error) {
+    res.status(401).json(this.error(error));
+};
+
+
+/**
+ * @public
+ * @param {!Response} res
  * @param {*} result
  */
 Response.prototype.send = function(res, result) {

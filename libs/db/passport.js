@@ -5,11 +5,11 @@ var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcrypt');
 
 // load up the models (to access user model)
-var models = require('../models');
+var models = require('../../models');
 
 module.exports = function(passport) {
 
-    // ----------------------- passport session setup -----------------------    
+    // ----------------------- passport session setup -----------------------
 
     // required for persistent login sessions
     // passport needs ability to serialize and unserialize users out of session

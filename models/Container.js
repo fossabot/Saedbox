@@ -8,9 +8,21 @@ var Container = Waterline.Collection.extend({
   connection: 'myLocalDisk',
 
   attributes: {
-    id: 'string',
-    user:{
+    container_id: {
+      type: 'string',
+      required: true
+    },
+    owner:{
     	model: 'user'
+    },
+    read:{
+    	type: 'array'
+    },
+    write:{
+    	type: 'array'
+    },
+    reboot:{
+    	type: 'array'
     }
   }
 });
