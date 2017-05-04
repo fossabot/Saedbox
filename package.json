@@ -1,7 +1,7 @@
 {
   "name": "saedbox",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.0.2",
+  "description": "Docker Management",
   "main": "index.js",
   "scripts": {
     "test": "mocha --timeout 15000",
@@ -29,9 +29,9 @@
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "sails-disk": "^0.10",
+    "snyk": "^1.25.2",
     "systeminformation": "^3.13",
-    "waterline": "^0.12.2",
-    "snyk": "^1.25.2"
+    "waterline": "^0.12.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",
