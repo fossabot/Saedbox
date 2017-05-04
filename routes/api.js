@@ -58,14 +58,14 @@ router.get("/api/services", isLoggedIn, function(req, res, next) {
 
 //Get Service ID's info
 router.get("/api/services/:id", isLoggedIn, function(req, res, next) {
-	checkContainerRights(req, res, "default", function(container) {
+	checkRights(req, res, "default", function(container) {
 		container ? docker.container(req.params.id,resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
 	})
 });
 
 //Stop/start Service
 router.get("/api/services/:id/:action", isLoggedIn, function(req, res, next) {
-	checkContainerRights(req, res, "stop", function(container) {
+	checkRights(req, res, "stop", function(container) {
 		if(container) {
 			switch(req.params.action) {
 				default:
@@ -87,22 +87,22 @@ router.get("/api/services/:id/:action", isLoggedIn, function(req, res, next) {
 
 //Delete Service
 router.delete("/api/services", isLoggedIn, function (req, res, next) {
-	getGroupRights(req, res, function(group) {
-		!bypass && group.p_cont_m ? docker.delete(req, resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
+	checkRights(req, res, "delete", function(container) {
+		container ? docker.delete(req, resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
 	})
 });
 
 //Create new Service
 router.post("/api/services", isLoggedIn, function(req, res, next) {
-	getGroupRights(req, res, function(group) {
-		!bypass && group.p_cont_m ? docker.new(req,resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
+	checkRights(req, res, "create", function(container) {
+		container ? docker.new(req,resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
 	})
 });
 
 //Update a Service
 router.put("/api/services", isLoggedIn, function(req, res, next) {
-	getGroupRights(req, res, function(group) {
-		!bypass && group.p_cont_m ? docker.new(req,resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
+	checkRights(req, res, "update", function(container) {
+		container ? docker.new(req,resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
 	})
 });
 
@@ -409,7 +409,7 @@ function getGroupRights(req,cb) {
 	}
 }
 
-function checkContainerRights(req,res,action,cb) {
+function checkRights(req,res,action,cb) {
 	switch(action) {
 		default:
 		  models.collections.container.findOne()
@@ -436,12 +436,16 @@ function checkContainerRights(req,res,action,cb) {
 		  .where(  { or : [ {owner : req.user.id}, {write : { contains: req.user.id}} ] })
 		  .where({container_id : req.body.id})
 		  .exec(function(err,container) {
-				console.log(container)
 			  container ? cb(true) : cb(false)
 		  })
 		break;
 
 		case "create":
-		 console.log("prout")
+		 models.collections.group.findOne()
+		 .where( {id : req.user.group} )
+		 .exec(function(err,group) {
+			 group.p_cont_m ? cb(true) : cb(false)
+		 })
+		break;
 	}
 }
