@@ -63,7 +63,7 @@ PUT /api/groups/:id Modify group
 - Docker
 - One beer (or more)
 
-## Run (Actually here is not build on hub)
+## Run (No build on github for now)
 ```shell
 $ docker run -d \
     -v /var/run/docker.sock \
