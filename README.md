@@ -7,7 +7,7 @@ Saedbox
 
 Saedbox is a web app used to easily deploy a seedbox managing web panel and dockerized applications without hassle. It's powered by NodeJS, Express, Dockerode, Traefik and a few bits of html & css.
 
-Saedbox is developped by a team of passionate members who believe in open-source and modularity. We encourage you to pass by our forum and to also check our wiki for any question, request or guidance. 
+Saedbox is developped by a team of passionate members who believe in open-source and modularity. We encourage you to pass by our forum and to also check our wiki for any question, request or guidance.
 
 Saedbox is developped under the MIT license.
 
@@ -20,7 +20,7 @@ Saedbox is developped under the MIT license.
 
 ### System info
 ```
-GET /api/system 
+GET /api/system
 ```
 
 ### Service Manipulating
@@ -63,27 +63,33 @@ PUT /api/groups/:id Modify group
 - Docker
 - One beer (or more)
 
-## Run
+## Run (Actually here is not build on hub)
 ```shell
 $ docker run -d \
     -v /var/run/docker.sock \
-    -p 9002:9002 \
+    -p 9000:9000 \
     saedbox/saedbox
 ```
-> C'est pas complet pour l'install
 
 ## Development installation
 ### Requirements
 - Docker
-- One beer (or more)
+- One beer (or more... surely more !)
 
 ### Run
+```shell
+$ docker build -t saedbox/saedbox .
+$ docker run -d \
+    -v /var/run/docker.sock \
+    -p 9000:9000 \
+    saedbox/saedbox
+```
+or
 ```shell
 $ docker run -ti --rm \
     -v /path/of/saedbox:/usr/app/src \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -w /usr/app/src \
-    -p 9002:9002 \
-    xataz/node:7 sh -c "npm i && npm run startdev"
+    -p 9000:9000 \
+    xataz/node:7 sh -c "npm i && npm run start"
 ```
-
