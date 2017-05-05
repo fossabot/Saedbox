@@ -102,7 +102,7 @@ router.post("/api/services", isLoggedIn, function(req, res, next) {
 //Update a Service
 router.put("/api/services", isLoggedIn, function(req, res, next) {
 	checkRights(req, res, "update", function(container) {
-		container ? docker.new(req,resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
+		container ? docker.update(req,resp.send.bind(resp,res)) : resp.sendUnauthorized(res,"You don't have the rights to access this ressource.");
 	})
 });
 

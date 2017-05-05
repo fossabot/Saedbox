@@ -60,21 +60,12 @@ if (process.env.DOCKER_SOCKET!=="test"){
   };
 
   docker.delete = function(req, cb) {
-    var container = docker.getContainer(req.body.id);
-    container.remove(function(err,data) {
-      if (err) {
-        cb(err);
-      } else {
-        models.collections.container.destroy({ container_id: container.id }, function(err) {
-          if(err) return err;
-          cb({statusCode : 200});
-        });
-      }
-    });
-  };
+      delete_container(req.body.id, cb);
+  }
 
   docker.new = function(req, cb) {
     var optsc = {
+      'name': 'prout',
       'Hostname': '',
       'User': '',
       'AttachStdin': true,
@@ -90,29 +81,66 @@ if (process.env.DOCKER_SOCKET!=="test"){
       'Volumes': {},
       'VolumesFrom': []
     };
-    docker.createContainer(optsc, function(err, container) {
-      if (err) {
-        if (err.statusCode == 404) {
-          docker.pull(req.body.name, function(err, stream) {
-            docker.modem.followProgress(stream, onFinished);
-            function onFinished(err, output) {
-              docker.createContainer(optsc, function(err, container) {
-                models.collections.container.create({owner: req.user.id, container_id: container.id}, function(err, model) {
-                  if(err) return err;
-                  cb(container);
-                });
-              })
-            }
-          })
-        }
-      } else {
-        models.collections.container.create({owner: req.user.id, container_id: container.id}, function(err, model) {
-          if(err) return err;
-          cb(container);
-        });
-      }
+    create_container(optsc, req.user.id, cb)
+  };
+
+  docker.update = function(req, cb) {
+    var container = docker.getContainer(req.body.id);
+    container.inspect(container)
+    .then(function(container) {
+      create_container(container.Config, req.user.id, function(res, err){
+        if(err) cb(err)
+        cb(res)
+      })
+    })
+    .then(function(container) {
+      delete_container(req.body.id, function(res, err){
+        if(err) cb(err)
+      })
+    })
+    .catch(function(err) {
+      console.log(err)
     })
   };
 }
 
 module.exports = docker;
+
+function delete_container(id, cb) {
+    var container = docker.getContainer(id);
+    container.remove(function(err,data) {
+      if (err) {
+        cb(err);
+      } else {
+        models.collections.container.destroy({ container_id: container.id }, function(err) {
+          if(err) return err;
+          cb({statusCode : 200});
+        });
+      }
+    });
+  };
+
+ function create_container(optsc, id, cb) {
+   docker.createContainer(optsc, function(err, container) {
+     if (err) {
+       if (err.statusCode == 404) {
+         docker.pull(optsc.image, function(err, stream) {
+           docker.modem.followProgress(stream, onFinished);
+           function onFinished(err, output) {
+             docker.createContainer(optsc, function(err, container) {
+               models.collections.container.create({owner: id, container_id: container.id}, function(err, model) {
+                 if(err) return err;
+                 cb(container);
+               });
+             })
+           }
+         })
+       }
+     } else {
+       models.collections.container.create({owner: id, container_id: container.id}, function(err, model) {
+         if(err) return err;
+         cb(container);
+       });
+     }
+   })
+ }
