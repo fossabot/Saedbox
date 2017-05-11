@@ -33,6 +33,7 @@ if (process.env.DOCKER_SOCKET!=="test"){
   docker.container = function(id,cb) {
     var container = docker.getContainer(id);
     container.inspect(function(err,data) {
+      if(err) cb(err)
       cb(data);
     });
   };
@@ -65,7 +66,7 @@ if (process.env.DOCKER_SOCKET!=="test"){
 
   docker.new = function(req, cb) {
     var optsc = {
-      'name': 'prout',
+      'name': req.body.name,
       'Hostname': '',
       'User': '',
       'AttachStdin': true,
@@ -77,7 +78,7 @@ if (process.env.DOCKER_SOCKET!=="test"){
       'Env': null,
       'Cmd': [],
       'Dns': [],
-      'Image': req.body.name,
+      'Image': req.body.Image,
       'Volumes': {},
       'VolumesFrom': []
     };
@@ -85,9 +86,21 @@ if (process.env.DOCKER_SOCKET!=="test"){
   };
 
   docker.update = function(req, cb) {
+    var rename
     var container = docker.getContainer(req.body.id);
     container.inspect(container)
     .then(function(container) {
+      rename = container.Name;
+      rename_container(container.Name+"_old", req.body.id, function(res, err){
+        if(err) cb(err)
+      })
+    })
+    .catch(function(err) {
+      console.log(err)
+    })
+    container.inspect(container)
+    .then(function(container) {
+      container.Config.name = rename;
       create_container(container.Config, req.user.id, function(res, err){
         if(err) cb(err)
         cb(res)
@@ -105,6 +118,13 @@ if (process.env.DOCKER_SOCKET!=="test"){
 }
 
 module.exports = docker;
+
+function rename_container(newname, id, cb) {
+  var container = docker.getContainer(id);
+  container.rename({name : newname}, function (err,data) {
+    err ? cb(err) : cb(data)
+  })
+}
 
 function delete_container(id, cb) {
     var container = docker.getContainer(id);
