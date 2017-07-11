@@ -95,7 +95,6 @@ $ docker run -ti --rm \
 ```
 
 ## Licensing
-=========
 Saedbox is licensed under the MIT License. See
 [LICENSE](https://github.com/saedbox/saedbox/blob/master/LICENSE) for the full
 license text.
