@@ -1,7 +1,8 @@
 # Saedbox
 Saedbox
 
-[![Known Vulnerabilities](https://snyk.io/test/github/saedbox/saedbox/b6a9af15ff053f4b5ee7f1099abd52251b112082/badge.svg)](https://snyk.io/test/github/saedbox/saedbox/b6a9af15ff053f4b5ee7f1099abd52251b112082)  [![Build Status](https://travis-ci.org/saedbox/Saedbox.svg?branch=master)](https://travis-ci.org/saedbox/Saedbox)
+[![Known Vulnerabilities](https://snyk.io/test/github/saedbox/saedbox/b6a9af15ff053f4b5ee7f1099abd52251b112082/badge.svg)](https://snyk.io/test/github/saedbox/saedbox/b6a9af15ff053f4b5ee7f1099abd52251b112082) [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fsaedbox%2FSaedbox.svg?type=shield)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fsaedbox%2FSaedbox?ref=badge_shield)
+ [![Build Status](https://travis-ci.org/saedbox/Saedbox.svg?branch=master)](https://travis-ci.org/saedbox/Saedbox)
 
 ![Saedbox](https://trello-attachments.s3.amazonaws.com/582c248a24efb954aa1a1d82/500x500/d0fa689b6f6fcb4a39e73e51049f441a/dgxye1O.png)
 
@@ -93,3 +94,7 @@ $ docker run -ti --rm \
     -p 9000:9000 \
     xataz/node:7 sh -c "npm i && npm run start"
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fsaedbox%2FSaedbox.svg?type=large)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fsaedbox%2FSaedbox?ref=badge_large)
